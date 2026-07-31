@@ -13,20 +13,20 @@ In the numerical experiments, the minimization target is the linear--quadratic l
 
 $$
 J(\varphi)
-=\mathbb{E}\!\left[
+=\mathbb{E}\Bigg[
 \frac{\gamma}{2}\langle W^{\varphi}\rangle_T
--\left(W_T^{\varphi}-W_0\right)
-\right]
-=\mathbb{E}\!\left[
+-\bigl(W_T^{\varphi}-W_0\bigr)
+\Bigg]
+=\mathbb{E}\Bigg[
 \int_0^T
-\left\{
-\frac{\gamma}{2}\left[(\sigma\varphi_t)^2+(\beta^{\perp})^2\right]
+\Bigg(
+\frac{\gamma}{2}\bigl[(\sigma\varphi_t)^2+(\beta^{\perp})^2\bigr]
 -\mu\varphi_t
-\right\}dt
-\right],
+\Bigg)dt
+\Bigg],
 $$
 
-where \(\langle W^{\varphi}\rangle_T\) is the quadratic variation of wealth and \(\gamma>0\) is the risk-aversion parameter. Thus, the objective balances a quadratic variance penalty against the linear expected-return reward. In the price-impact experiment, the running loss additionally contains the trading-cost term \(\Lambda |v_t|^q/q\).
+where $$\langle W^{\varphi}\rangle_T$$ is the quadratic variation of wealth and $$\gamma>0$$ is the risk-aversion parameter. Thus, the objective balances a quadratic variance penalty against the linear expected-return reward. In the price-impact experiment, the running loss additionally contains the trading-cost term $$\Lambda |v_t|^q/q$$.
 
 Writing terminal loss as $$\ell(W_T)=-W_T$$, the risk constraint is
 
@@ -93,7 +93,7 @@ For fixed \((\lambda,\eta)\), the bounded quadratic Hamiltonian is minimized ana
 | CVaR multiplier \(\lambda^*\) | 0.0000 | 0.0666 |
 
 <p align="center">
-  <img src="figures/complete_market_terminal_wealth.png" width="850" alt="Complete-market terminal wealth distributions for inactive and active CVaR policies">
+  <img src="figures/complete_market.png" width="850" alt="Complete-market terminal wealth distributions for inactive and active CVaR policies">
 </p>
 
 The active policy compresses the left tail around the required wealth floor. This improvement is obtained by lowering average risky exposure from the Merton level of \(0.40\) to approximately \(0.30\).
@@ -118,7 +118,7 @@ with \(\beta^{\perp}=0.02\). The HJB state remains one-dimensional, but the weal
 | CVaR multiplier \(\lambda^*\) | 0.0000 | 0.1306 |
 
 <p align="center">
-  <img src="figures/incomplete_market_exposure.png" width="850" alt="Incomplete-market mean dollar risky exposure and active policy range">
+  <img src="figures/incomplete_market.png" width="850" alt="Incomplete-market mean dollar risky exposure and active policy range">
 </p>
 
 Because the independent shock cannot be hedged through the stock, the active strategy is more conservative than in the complete market. Its mean dollar exposure falls to approximately \(0.26\).
@@ -144,7 +144,7 @@ This produces a two-state HJB problem on a \(161\times193\) wealth--exposure gri
 | Mean dollar risky exposure | 0.3105 | 0.2421 |
 
 <p align="center">
-  <img src="figures/linear_control_good_bad_paths.png" width="850" alt="Linear-control wealth, risky exposure, and trading speed in favorable and unfavorable markets">
+  <img src="figures/linear_market.png" width="850" alt="Linear-control wealth, risky exposure, and trading speed in favorable and unfavorable markets">
 </p>
 
 The path comparison illustrates the state dependence of the solution. Exposure approaches the Merton level after favorable outcomes but is progressively reduced following an unfavorable market path.
@@ -173,7 +173,7 @@ The saved calibration uses \(\Lambda=0.004472135955\), a fine local action grid 
 | Mean absolute trading rate | 0.4049 | 0.3439 |
 
 <p align="center">
-  <img src="figures/square_root_impact_control.png" width="850" alt="Mean trading-rate controls under inactive and active CVaR policies with square-root price impact">
+  <img src="figures/square_market.png" width="850" alt="Mean trading-rate controls under inactive and active CVaR policies with square-root price impact">
 </p>
 
 Price impact slows the initial movement toward the desired position. The active policy trades less aggressively and maintains a lower average exposure, reducing both terminal dispersion and downside risk.
