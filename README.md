@@ -173,7 +173,7 @@ The saved calibration uses \(\Lambda=0.004472135955\), a fine local action grid 
 | Mean absolute trading rate | 0.4049 | 0.3439 |
 
 <p align="center">
-  <img src="figures/square_market.png" width="850" alt="Mean trading-rate controls under inactive and active CVaR policies with square-root price impact">
+  <img src="figures/power_market.png" width="850" alt="Mean trading-rate controls under inactive and active CVaR policies with square-root price impact">
 </p>
 
 Price impact slows the initial movement toward the desired position. The active policy trades less aggressively and maintains a lower average exposure, reducing both terminal dispersion and downside risk.
