@@ -11,7 +11,7 @@ A concise visual summary is available on the [project webpage](index.html).
 We consider a continuous-time investor who minimizes a convex trading objective subject to a CVaR constraint on terminal loss. Writing terminal loss as \(L_T=-W_T\), the risk constraint is
 
 $$
-\operatorname{CVaR}_{\alpha}(L_T) \leq c,
+\text{CVaR}_{\alpha}(L_T) \leq c,
 $$
 
 where \(W_T\) is terminal wealth and \(\alpha=0.95\) in all reported experiments. The active cases use \(c=-0.94\), equivalently requiring lower-tail wealth CVaR to be at least \(0.94\).
