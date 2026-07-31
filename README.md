@@ -4,7 +4,6 @@ This repository contains the numerical experiments accompanying the manuscript *
 
 The four Jupyter notebooks are self-contained: each includes the model specification, Hamilton--Jacobi--Bellman (HJB) solver, CVaR calibration, Monte Carlo simulation, and plotting routines. Only NumPy and Matplotlib are required for the numerical calculations.
 
-A concise visual summary is available on the [project webpage](index.html).
 
 ## Overview
 
