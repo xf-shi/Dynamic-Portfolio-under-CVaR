@@ -16,14 +16,14 @@ J(\varphi)
 =\mathbb{E}\Bigg[
 \frac{\gamma}{2}\langle W^{\varphi}\rangle_T
 -\bigl(W_T^{\varphi}-W_0\bigr)
-\Bigg]
+\Bigg] - \text{total costs}
 =\mathbb{E}\Bigg[
 \int_0^T
 \Bigg(
 \frac{\gamma}{2}\bigl[(\sigma\varphi_t)^2+(\beta^{\perp})^2\bigr]
 -\mu\varphi_t
 \Bigg)dt
-\Bigg],
+\Bigg]  - \text{total costs} ,
 $$
 
 where $$\langle W^{\varphi}\rangle_T$$ is the quadratic variation of wealth and $$\gamma>0$$ is the risk-aversion parameter. Thus, the objective balances a quadratic variance penalty against the linear expected-return reward. In the price-impact experiment, the running loss additionally contains the trading-cost term $$\Lambda |v_t|^q/q$$.
