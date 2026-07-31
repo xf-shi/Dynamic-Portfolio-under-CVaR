@@ -125,16 +125,16 @@ Because the independent shock cannot be hedged through the stock, the active str
 
 ### 3. Linear Control Dynamics
 
-The third notebook treats dollar risky exposure $$\varphi_t$$ as a state variable and its adjustment rate $$\dot\varphi_t$$ as the control:
+The third notebook treats dollar risky exposure $$\varphi_t$$ as a state variable and its adjustment rate $$\dot\varphi_t$$ as the control, with parameter $$\Lambda = 0.01$$:
 
 $$
 \begin{aligned}
-dW_t &= x_t(\mu\,dt+\sigma\,dB_t),\\
-dx_t &= v_t\,dt+x_t(\mu\,dt+\sigma\,dB_t).
+dW_t &= \varphi_t(\mu\,dt+\sigma\,dB_t),\\
+dx_t &= \dot\varphi_t\,dt+\varphi_t(\mu\,dt+\sigma\,dB_t).
 \end{aligned}
 $$
 
-This produces a two-state HJB problem on a \(161\times193\) wealth--exposure grid with 320 time steps. The calibrated active policy is feasible on all 40 tuning and holdout seeds, with worst-panel CVaR slack below \(10^{-5}\).
+This produces a two-state HJB problem on a $$161\times193$$ wealth--exposure grid with 320 time steps. The calibrated active policy is feasible on all 40 tuning and holdout seeds, with worst-panel CVaR slack below $$10^{-5}$$.
 
 | Result | Inactive | Active |
 |---|---:|---:|
@@ -151,18 +151,18 @@ The path comparison illustrates the state dependence of the solution. Exposure a
 
 ### 4. Square-Root Price Impact
 
-The final experiment adds a nonlinear trading penalty with exponent \(q=3/2\):
+The final experiment adds a square-root impact model:
 
 $$
 \begin{aligned}
-dW_t &= \left(\mu x_t-\frac{\Lambda}{q}|v_t|^q\right)dt
-       +\sigma x_t\,dB_t,\\
-dx_t &= v_t\,dt+x_t(\mu\,dt+\sigma\,dB_t),
+dW_t &= \left(\mu \varphi_t-\frac{\Lambda}{q}|\dot\varphi_t|^q\right)dt
+       +\sigma \varphi_t\,dB_t,\\
+d\varphi_t &= \dot\varphi_t\,dt+\varphi_t(\mu\,dt+\sigma\,dB_t),
 \qquad q=\frac{3}{2}.
 \end{aligned}
 $$
 
-The saved calibration uses \(\Lambda=0.004472135955\), a fine local action grid with spacing `0.01`, and no independent endowment shock. After optimization, both policies are evaluated on a final sample of 50,000 paths that is not used for calibration.
+The saved calibration uses $$\Lambda=0.004472135955$$, a fine local action grid with spacing `0.01`, and no independent endowment shock. After optimization, both policies are evaluated on a final sample of 50,000 paths that is not used for calibration.
 
 | Out-of-sample result | Inactive | Active |
 |---|---:|---:|
