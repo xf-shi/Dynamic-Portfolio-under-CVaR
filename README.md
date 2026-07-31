@@ -83,20 +83,20 @@ $$
 dW_t = \phi_t(\mu\,dt+\sigma\,dB_t).
 $$
 
-For fixed \((\lambda,\eta)\), the bounded quadratic Hamiltonian is minimized analytically. The stored experiment uses a 201-point wealth grid, 100 time steps, and 5,000 Monte Carlo paths.
+For fixed $$(\lambda,\eta)$$, the bounded quadratic Hamiltonian is minimized analytically. The stored experiment uses a 201-point wealth grid, 100 time steps, and 5,000 Monte Carlo paths.
 
 | Result | Inactive | Active |
 |---|---:|---:|
 | Mean terminal wealth | 1.0323 | 1.0242 |
 | Lower-tail wealth CVaR | 0.8690 | 0.9400 |
 | Mean dollar risky exposure | 0.4000 | 0.3001 |
-| CVaR multiplier \(\lambda^*\) | 0.0000 | 0.0666 |
+| CVaR multiplier $$\lambda^*$$ | 0.0000 | 0.0666 |
 
 <p align="center">
   <img src="figures/complete_market.png" width="850" alt="Complete-market terminal wealth distributions for inactive and active CVaR policies">
 </p>
 
-The active policy compresses the left tail around the required wealth floor. This improvement is obtained by lowering average risky exposure from the Merton level of \(0.40\) to approximately \(0.30\).
+The active policy compresses the left tail around the required wealth floor. This improvement is obtained by lowering average risky exposure from the Merton level of $$0.40$$ to approximately $$0.30$$.
 
 ### 2. Incomplete Market with Nontraded Risk
 
@@ -108,24 +108,24 @@ dW_t = \phi_t(\mu\,dt+\sigma\,dB_t)
 \qquad B\perp B^{\perp},
 $$
 
-with \(\beta^{\perp}=0.02\). The HJB state remains one-dimensional, but the wealth grid is concentrated near \(W=-\eta\), where the terminal CVaR penalty has its kink. The multiplier is calibrated using 20,000 independent holdout paths.
+with $$\beta^{\perp}=0.02$$. The HJB state remains one-dimensional, but the wealth grid is concentrated near $$w=-\eta$$, where the terminal CVaR penalty has its kink. The multiplier is calibrated using 20,000 independent holdout paths.
 
 | Result | Inactive | Active |
 |---|---:|---:|
 | Mean terminal wealth | 1.0317 | 1.0205 |
 | Lower-tail wealth CVaR | 0.8642 | 0.9400 |
 | Mean dollar risky exposure | 0.4000 | 0.2601 |
-| CVaR multiplier \(\lambda^*\) | 0.0000 | 0.1306 |
+| CVaR multiplier $$\lambda^*$$ | 0.0000 | 0.1306 |
 
 <p align="center">
   <img src="figures/incomplete_market.png" width="850" alt="Incomplete-market mean dollar risky exposure and active policy range">
 </p>
 
-Because the independent shock cannot be hedged through the stock, the active strategy is more conservative than in the complete market. Its mean dollar exposure falls to approximately \(0.26\).
+Because the independent shock cannot be hedged through the stock, the active strategy is more conservative than in the complete market. Its mean dollar exposure falls to approximately $$0.26$$.
 
 ### 3. Linear Control Dynamics
 
-The third notebook treats dollar risky exposure \(x_t\) as a state variable and its adjustment rate \(v_t\) as the control:
+The third notebook treats dollar risky exposure $$\varphi_t$$ as a state variable and its adjustment rate $$\dot\varphi_t$$ as the control:
 
 $$
 \begin{aligned}
