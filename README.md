@@ -18,8 +18,8 @@ where \(W_T\) is terminal wealth and \(\alpha=0.95\) in all reported experiments
 The auxiliary-threshold representation of CVaR converts the constrained problem into a family of standard stochastic-control problems indexed by the Rockafellar threshold \(\eta\) and Lagrange multiplier \(\lambda\). Numerically, we combine:
 
 - a finite-difference HJB solver for the feedback policy;
-- golden-section minimization over \(\eta\);
-- outer bisection over \(\lambda\);
+- golden-section minimization over $$\eta$$;
+- outer bisection over $$\lambda$$;
 - Monte Carlo evaluation on training, holdout, or out-of-sample paths.
 
 When the CVaR constraint is inactive, the computed strategy recovers the Merton benchmark. When it binds, the policy reduces risky exposure after adverse outcomes while preserving more exposure in favorable states. Incomplete-market risk strengthens this conservative response, while price impact lowers both the desired position and adjustment speed.
