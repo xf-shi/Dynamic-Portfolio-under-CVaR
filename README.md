@@ -49,12 +49,12 @@ When the CVaR constraint is inactive, the computed strategy recovers the Merton 
 
 | File | Description |
 |---|---|
-| [`Complete_Market_Plots.ipynb`](Complete_Market_Plots.ipynb) | Wealth-only complete-market benchmark with direct control of dollar risky exposure. |
-| [`Incomplete_Market_Plots.ipynb`](Incomplete_Market_Plots.ipynb) | Wealth-only incomplete-market model with an independent, nontraded endowment shock and holdout calibration. |
-| [`Linear_Control_Dynamics_Plots.ipynb`](Linear_Control_Dynamics_Plots.ipynb) | Two-state HJB model in which dollar exposure evolves through a controlled adjustment rate. |
-| [`Square_Root_Impact_Plots.ipynb`](Square_Root_Impact_Plots.ipynb) | Nonlinear price-impact model with exponent \(q=3/2\) and final out-of-sample validation. |
+| [`Complete_Market_Plots.ipynb`](Complete_Market_Plots.ipynb) | complete-market benchmark. |
+| [`Incomplete_Market_Plots.ipynb`](Incomplete_Market_Plots.ipynb) | incomplete-market model with an independent, nontraded endowment shock. |
+| [`Linear_Control_Dynamics_Plots.ipynb`](Linear_Control_Dynamics_Plots.ipynb) | quadratic transaction costs model in which dollar exposure evolves through a controlled adjustment rate. |
+| [`Square_Root_Impact_Plots.ipynb`](Square_Root_Impact_Plots.ipynb) | Square-root price-impact model. |
 | [`index.html`](index.html) | Standalone GitHub Pages overview of the project and stored results. |
-| [`requirements.txt`](requirements.txt) | Minimal Python environment for running the notebooks locally. |
+
 
 ## Common Model Parameters
 
@@ -189,39 +189,6 @@ Price impact slows the initial movement toward the desired position. The active 
 
 These numerical values are the outputs saved in the notebooks. Fresh Monte Carlo simulations have ordinary sampling variation, and the results may change when the grids, seeds, tolerances, or model parameters are modified.
 
-## Running the Code
-
-### Google Colab
-
-Each notebook is self-contained and can be uploaded directly to Google Colab. Open the notebook and select **Runtime → Run all**. The saved outputs can be inspected without rerunning the expensive calibration cells.
-
-### Local Installation
-
-Python 3.10 or later is recommended.
-
-```bash
-git clone https://github.com/<username>/<repository>.git
-cd <repository>
-python -m venv .venv
-```
-
-On Windows PowerShell:
-
-```powershell
-.venv\Scripts\activate
-pip install -r requirements.txt
-jupyter lab
-```
-
-On macOS or Linux:
-
-```bash
-source .venv/bin/activate
-pip install -r requirements.txt
-jupyter lab
-```
-
-The complete- and incomplete-market active searches can take several minutes. The two-state HJB and nonlinear price-impact experiments are more computationally intensive. The notebooks include calibrated values and saved figures so that the reported results remain available without a full rerun.
 
 ## Citation
 
