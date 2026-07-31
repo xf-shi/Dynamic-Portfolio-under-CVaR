@@ -7,15 +7,36 @@ The four Jupyter notebooks are self-contained: each includes the model specifica
 
 ## Overview
 
-We consider a continuous-time investor who minimizes a convex trading objective subject to a CVaR constraint on terminal loss. Writing terminal loss as \(L_T=-W_T\), the risk constraint is
+We consider a continuous-time investor who minimizes a convex trading objective subject to a CVaR constraint on terminal loss. 
+
+In the numerical experiments, the minimization target is the linear--quadratic loss
+
+$$
+J(\varphi)
+=\mathbb{E}\!\left[
+\frac{\gamma}{2}\langle W^{\varphi}\rangle_T
+-\left(W_T^{\varphi}-W_0\right)
+\right]
+=\mathbb{E}\!\left[
+\int_0^T
+\left\{
+\frac{\gamma}{2}\left[(\sigma\varphi_t)^2+(\beta^{\perp})^2\right]
+-\mu\varphi_t
+\right\}dt
+\right],
+$$
+
+where \(\langle W^{\varphi}\rangle_T\) is the quadratic variation of wealth and \(\gamma>0\) is the risk-aversion parameter. Thus, the objective balances a quadratic variance penalty against the linear expected-return reward. In the price-impact experiment, the running loss additionally contains the trading-cost term \(\Lambda |v_t|^q/q\).
+
+Writing terminal loss as $$\ell(W_T)=-W_T$$, the risk constraint is
 
 $$
 \text{CVaR}_{\alpha}(L_T) \leq c,
 $$
 
-where \(W_T\) is terminal wealth and \(\alpha=0.95\) in all reported experiments. The active cases use \(c=-0.94\), equivalently requiring lower-tail wealth CVaR to be at least \(0.94\).
+where $$W_T$$ is terminal wealth and $$\alpha=0.95$$ in all reported experiments. The active cases use $$=-0.94$$, equivalently requiring lower-tail wealth CVaR$$(W_T)$$ to be at least $$0.94$$.
 
-The auxiliary-threshold representation of CVaR converts the constrained problem into a family of standard stochastic-control problems indexed by the Rockafellar threshold \(\eta\) and Lagrange multiplier \(\lambda\). Numerically, we combine:
+The auxiliary-threshold representation of CVaR converts the constrained problem into a family of standard stochastic-control problems indexed by the Rockafellar threshold $$R\eta$$ and Lagrange multiplier $$\lambda$$. Numerically, we combine:
 
 - a finite-difference HJB solver for the feedback policy;
 - golden-section minimization over $$\eta$$;
@@ -41,14 +62,14 @@ The numerical experiments share the following baseline calibration.
 
 | Symbol / code | Meaning | Value |
 |---|---|---:|
-| `horizon` | Trading horizon \(T\) | `1.0` |
-| `w0` | Initial wealth \(W_0\) | `1.0` |
-| `mu` | Risky-asset drift \(\mu\) | `0.08` |
-| `sigma` | Risky-asset volatility \(\sigma\) | `0.20` |
-| `gamma` | Risk-aversion coefficient \(\gamma\) | `5.0` |
-| `alpha` | CVaR confidence level \(\alpha\) | `0.95` |
-| `cvar_limit` | Active terminal-loss CVaR limit \(c\) | `-0.94` |
-| `x_merton` | Frictionless Merton dollar exposure \(\mu/(\gamma\sigma^2)\) | `0.40` |
+| `horizon` | Trading horizon $$T$$ | `1.0` |
+| `w0` | Initial wealth $$W_0$$ | `1.0` |
+| `mu` | Risky-asset drift $$\mu$$ | `0.08` |
+| `sigma` | Risky-asset volatility $$\sigma$$ | `0.20` |
+| `gamma` | Risk-aversion coefficient $$\gamma$$ | `5.0` |
+| `alpha` | CVaR confidence level $$\alpha$$ | `0.95` |
+| `cvar_limit` | Active terminal-loss CVaR limit $$c$$ | `-0.94` |
+| `x_merton` | Frictionless Merton dollar exposure $$\mu/\gamma\sigma^2$$ | `0.40` |
 
 The notebooks label the unconstrained comparison as **inactive** and the binding CVaR solution as **active**. Some printed tables use the loss convention and therefore report CVaR with a minus sign; the result tables below use the equivalent positive lower-tail wealth convention.
 
