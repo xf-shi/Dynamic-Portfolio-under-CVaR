@@ -34,7 +34,7 @@ $$
 \text{CVaR}_{\alpha}(L_T) \leq c,
 $$
 
-where $$W_T$$ is terminal wealth and $$\alpha=0.95$$ in all reported experiments. The active cases use $$=-0.94$$, equivalently requiring lower-tail wealth CVaR$$(W_T)$$ to be at least $$0.94$$.
+where $$W_T$$ is terminal wealth and $$\alpha=0.95$$ in all reported experiments. The active cases use $$=-0.94$$, equivalently requiring lower-tail wealth $$\text{CVaR}(W_T)$$ to be at least $$0.94$$.
 
 The auxiliary-threshold representation of CVaR converts the constrained problem into a family of standard stochastic-control problems indexed by the Rockafellar threshold $$R\eta$$ and Lagrange multiplier $$\lambda$$. Numerically, we combine:
 
