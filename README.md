@@ -1,4 +1,4 @@
-# Tail-Risk Control Lab
+# Dynamic Portfolio Optimization under CVaR Constraints
 
 Four self-contained Jupyter notebooks explore how a 95% CVaR constraint changes portfolio feedback decisions as the model moves from a frictionless complete market to nonlinear trading costs.
 
