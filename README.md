@@ -180,7 +180,7 @@ Price impact slows the initial movement toward the desired position. The active 
 
 ## Summary of Stored Results
 
-| Model | Active tail wealth CVaR | Inactive → active mean wealth | Inactive → active exposure |
+| Model | Active tail wealth CVaR | Inactive → active mean wealth | Inactive → active mean exposure |
 |---|---:|---:|---:|
 | Complete market | 0.9400 | 1.0323 → 1.0242 | 0.4000 → 0.3001 |
 | Incomplete market | 0.9400 | 1.0317 → 1.0205 | 0.4000 → 0.2601 |
