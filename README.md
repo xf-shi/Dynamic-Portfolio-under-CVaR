@@ -181,14 +181,13 @@ Price impact slows the initial movement toward the desired position. The active 
 ## Summary of Stored Results
 
 | Model | Active tail wealth CVaR | Inactive → active mean wealth | Inactive → active exposure |
-|---|---:|---:|---:|---:|
-| Complete market | 0.9400 | 1.0323 → 1.0242 | 0.4000 → 0.3001 | 
-| Incomplete market | 0.9400 | 1.0317 → 1.0205 | 0.4000 → 0.2601 | 
-| Linear control | 0.9409 | 1.0251 → 1.0197 | 0.3105 → 0.2421 | 
-| Square-root impact | 0.9409 | 1.0260 → 1.0180 | 0.3500 → 0.2422 | 
+|---|---:|---:|---:|
+| Complete market | 0.9400 | 1.0323 → 1.0242 | 0.4000 → 0.3001 |
+| Incomplete market | 0.9400 | 1.0317 → 1.0205 | 0.4000 → 0.2601 |
+| Linear control | 0.9409 | 1.0251 → 1.0197 | 0.3105 → 0.2421 |
+| Square-root impact | 0.9409 | 1.0260 → 1.0180 | 0.3500 → 0.2422 |
 
 These numerical values are the outputs saved in the notebooks. Fresh Monte Carlo simulations have ordinary sampling variation, and the results may change when the grids, seeds, tolerances, or model parameters are modified.
-
 
 ## Citation
 
