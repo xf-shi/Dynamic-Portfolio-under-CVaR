@@ -61,14 +61,14 @@ J(\varphi)
 \right].
 $$
 
-### Dynamic portfolio adjustment
+### Dynamic portfolio management with trading rate regularization / square-root price impact
 
-Let $\theta_t$ denote the number of shares and define
+Let $\phi_t$ denote the number of shares and define
 
 $$
-\varphi_t=\theta_tS_t,
+\varphi_t=\phi_tS_t,
 \qquad
-\dot\varphi_t=\dot\theta_tS_t.
+\dot\varphi_t=\dot\phi_tS_t.
 $$
 
 Thus, $\varphi_t$ is dollar risky exposure and $\dot\varphi_t$ is the signed dollar trading-rate control.
@@ -81,7 +81,7 @@ d\varphi_t
 +\varphi_t(\mu\,dt+\sigma\,dB_t).
 $$
 
-The two portfolio-adjustment experiments have different economic interpretations.
+The two portfolio management experiments have different economic interpretations.
 
 - **Quadratic regularization:** $\Lambda\dot\varphi_t^2/2$, with $\Lambda=0.01$, is an objective regularizer that smooths adjustment.
   It is not a cash execution cost and is not deducted from wealth.
@@ -159,45 +159,6 @@ In the direct-exposure experiments, average exposure is the sample--time average
 In the portfolio-adjustment experiments, it is the sample--time average of the exposure state over all paths and stored dates.
 Fresh Monte Carlo runs will exhibit ordinary sampling variation.
 
-## Running the notebooks
-
-### Google Colab
-
-Upload a notebook to Google Colab and select **Runtime > Run all**.
-The saved outputs can be inspected without rerunning the expensive search cells.
-
-### Local installation
-
-Python 3.10 or later is recommended.
-
-```bash
-git clone https://github.com/xf-shi/Dynamic-Portfolio-under-CVaR.git
-cd Dynamic-Portfolio-under-CVaR
-python -m venv .venv
-```
-
-On Windows PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-jupyter lab
-```
-
-On macOS or Linux:
-
-```bash
-source .venv/bin/activate
-pip install -r requirements.txt
-jupyter lab
-```
-
-The complete-, incomplete-, and quadratic-regularization notebooks default to stored, validation-buffered calibration parameters for a faster OOS rerun.
-Set `RUN_FULL_SEARCH=True` to repeat their full nested search.
-The square-root-impact notebook uses `RUN_FULL_OUTER_SEARCH=True` by default and therefore repeats the nested search before final OOS evaluation.
-
-The two-state HJB notebooks are substantially more computationally intensive than the wealth-only benchmarks.
-Run the notebooks from top to bottom because later plotting cells use policies and OOS samples created by earlier cells.
 
 ## Stored figures
 
