@@ -1,193 +1,236 @@
 # Dynamic Portfolio Optimization under CVaR Constraints
 
-This repository contains the numerical experiments accompanying the manuscript **Dynamic Portfolio Optimization under CVaR Constraints**. The code studies continuous-time portfolio choice subject to a terminal Conditional Value-at-Risk (CVaR) constraint in complete and incomplete markets, with both frictionless and price-impact dynamics.
+**Anran Hu**<sup>1</sup>, **Silvana M. Pesenti**<sup>2</sup>, and **Xiaofei Shi**<sup>2</sup>
 
-The four Jupyter notebooks are self-contained: each includes the model specification, Hamilton--Jacobi--Bellman (HJB) solver, CVaR calibration, Monte Carlo simulation, and plotting routines. Only NumPy and Matplotlib are required for the numerical calculations.
+<sup>1</sup> Department of Industrial Engineering and Operations Research, Columbia University  
+<sup>2</sup> Department of Statistical Sciences, University of Toronto
 
+This repository contains the numerical experiments for the manuscript **Dynamic Portfolio Optimization under CVaR Constraints**.
+The code solves continuous-time portfolio problems with a hard terminal Conditional Value-at-Risk (CVaR) constraint in complete and incomplete markets and under gradual portfolio adjustment and nonlinear price impact.
 
-## Overview
+The four notebooks are self-contained and include the model, finite-difference Hamilton--Jacobi--Bellman (HJB) solver, CVaR-threshold search, multiplier search, Monte Carlo evaluation, and plotting code.
+Saved outputs allow the reported results to be inspected without rerunning the full calibration.
 
-We consider a continuous-time investor who minimizes a convex trading objective subject to a CVaR constraint on terminal loss. 
+[View the project webpage](index.html)
 
-In the numerical experiments, the minimization target is the linear--quadratic loss
+## Main numerical findings
+
+- A nonbinding terminal CVaR constraint recovers the corresponding unconstrained benchmark.
+- When the constraint binds, the optimal policy reduces risky exposure after adverse outcomes while retaining more exposure in favorable states.
+- Independent nontraded risk strengthens this state-dependent de-risking response.
+- When exposure must be adjusted gradually, the binding constraint lowers both the desired position and the speed of adjustment.
+- The same qualitative mechanism remains visible under square-root price impact, where execution costs are deducted from wealth.
+
+## Repository contents
+
+| File | Experiment |
+|---|---|
+| [`Complete_Market_Plots.ipynb`](Complete_Market_Plots.ipynb) | Complete-market benchmark with wealth as the HJB state and dollar risky exposure as the control. |
+| [`Incomplete_Market_Plots.ipynb`](Incomplete_Market_Plots.ipynb) | Incomplete-market benchmark with an independent, nontraded endowment shock. |
+| [`Linear_Control_Dynamics_Plots.ipynb`](Linear_Control_Dynamics_Plots.ipynb) | Two-state HJB model with quadratic trading-rate regularization. |
+| [`Square_Root_Impact_Plots.ipynb`](Square_Root_Impact_Plots.ipynb) | Two-state HJB model with square-root execution-price impact. |
+| [`figures/`](figures/) | Stored summary figures used by the project webpage and README. |
+| [`index.html`](index.html) | Standalone project webpage. |
+| [`requirements.txt`](requirements.txt) | Minimal local Python environment. |
+
+## Model and notation
+
+Terminal loss is defined by
+
+$$
+L_T=-W_T,
+$$
+
+and the risk constraint is
+
+$$
+\operatorname{CVaR}_{\alpha}(L_T)\le c,
+\qquad \alpha=0.95.
+$$
+
+All result tables below use the terminal-loss convention.
+The empirical feasibility residual is
+
+$$
+\operatorname{CVaR}_{\alpha}(-W_T)-c,
+$$
+
+so a nonpositive residual is feasible.
+We use **nonbinding** for the case $c=-0.86$ and **binding** for the case $c=-0.94$.
+The notebook dictionaries retain the legacy keys **inactive** and **active**, respectively, for backward compatibility.
+
+### Direct-exposure benchmarks
+
+In the complete- and incomplete-market experiments, $\varphi_t$ denotes dollar risky exposure and
+
+$$
+dW_t
+=\varphi_t(\mu\,dt+\sigma\,dB_t)
++\beta^{\perp}dB_t^{\perp}.
+$$
+
+The complete-market case sets $\beta^{\perp}=0$, whereas the incomplete-market case sets $\beta^{\perp}=0.02$ with $B^{\perp}$ independent of $B$.
+The objective is
 
 $$
 J(\varphi)
-=\mathbb{E}\Bigg[
-\frac{\gamma}{2}\langle W^{\varphi}\rangle_T
--\bigl(W_T^{\varphi}-W_0\bigr)
-\Bigg] - \text{total costs}
-=\mathbb{E}\Bigg[
+=\mathbb E\!\left[
 \int_0^T
-\Bigg(
-\frac{\gamma}{2}\bigl[(\sigma\varphi_t)^2+(\beta^{\perp})^2\bigr]
+\left{
+\frac{\gamma}{2}\left[(\sigma\varphi_t)^2+(\beta^{\perp})^2\right]
 -\mu\varphi_t
-\Bigg)dt
-\Bigg]  - \text{total costs} ,
+\right}dt
+\right].
 $$
 
-where $$\langle W^{\varphi}\rangle_T$$ is the quadratic variation of wealth and $$\gamma>0$$ is the risk-aversion parameter. Thus, the objective balances a quadratic variance penalty against the linear expected-return reward. In the price-impact experiment, the running loss additionally contains the trading-cost term $$\Lambda |v_t|^q/q$$.
+### Dynamic portfolio adjustment
 
-Writing terminal loss as $$\ell(W_T)=-W_T$$, the risk constraint is
-
-$$
-\text{CVaR}_{\alpha}(L_T) \leq c,
-$$
-
-where $$W_T$$ is terminal wealth and $$\alpha=0.95$$ in all reported experiments. The active cases use $$=-0.94$$, equivalently requiring lower-tail wealth $$\text{CVaR}(W_T)$$ to be at least $$0.94$$.
-
-The auxiliary-threshold representation of CVaR converts the constrained problem into a family of standard stochastic-control problems indexed by the Rockafellar threshold $$R\eta$$ and Lagrange multiplier $$\lambda$$. Numerically, we combine:
-
-- a finite-difference HJB solver for the feedback policy;
-- golden-section minimization over $$\eta$$;
-- outer bisection over $$\lambda$$;
-- Monte Carlo evaluation on training, holdout, or out-of-sample paths.
-
-When the CVaR constraint is inactive, the computed strategy recovers the Merton benchmark. When it binds, the policy reduces risky exposure after adverse outcomes while preserving more exposure in favorable states. Incomplete-market risk strengthens this conservative response, while price impact lowers both the desired position and adjustment speed.
-
-## Repository Contents
-
-| File | Description |
-|---|---|
-| [`Complete_Market_Plots.ipynb`](Complete_Market_Plots.ipynb) | complete-market benchmark. |
-| [`Incomplete_Market_Plots.ipynb`](Incomplete_Market_Plots.ipynb) | incomplete-market model with an independent, nontraded endowment shock. |
-| [`Linear_Control_Dynamics_Plots.ipynb`](Linear_Control_Dynamics_Plots.ipynb) | quadratic transaction costs model in which dollar exposure evolves through a controlled adjustment rate. |
-| [`Square_Root_Impact_Plots.ipynb`](Square_Root_Impact_Plots.ipynb) | Square-root price-impact model. |
-| [`index.html`](index.html) | Standalone GitHub Pages overview of the project and stored results. |
-
-
-## Common Model Parameters
-
-The numerical experiments share the following baseline calibration.
-
-| Symbol / code | Meaning | Value |
-|---|---|---:|
-| `horizon` | Trading horizon $$T$$ | `1.0` |
-| `w0` | Initial wealth $$W_0$$ | `1.0` |
-| `mu` | Risky-asset drift $$\mu$$ | `0.08` |
-| `sigma` | Risky-asset volatility $$\sigma$$ | `0.20` |
-| `gamma` | Risk-aversion coefficient $$\gamma$$ | `5.0` |
-| `alpha` | CVaR confidence level $$\alpha$$ | `0.95` |
-| `cvar_limit` | Active terminal-loss CVaR limit $$c$$ | `-0.94` |
-| `x_merton` | Frictionless Merton dollar exposure $$\mu/\gamma\sigma^2$$ | `0.40` |
-
-The notebooks label the unconstrained comparison as **inactive** and the binding CVaR solution as **active**. Some printed tables use the loss convention and therefore report CVaR with a minus sign; the result tables below use the equivalent positive lower-tail wealth convention.
-
-## Numerical Experiments
-
-### 1. Complete-Market Benchmark
-
-The complete-market notebook uses wealth as the only HJB state. Dollar risky exposure \(\phi_t=\varphi_tS_t\) is controlled directly, and the wealth dynamics are
+Let $\theta_t$ denote the number of shares and define
 
 $$
-dW_t = \phi_t(\mu\,dt+\sigma\,dB_t).
+\varphi_t=\theta_tS_t,
+\qquad
+\dot\varphi_t=\dot\theta_tS_t.
 $$
 
-For fixed $$(\lambda,\eta)$$, the bounded quadratic Hamiltonian is minimized analytically. The stored experiment uses a 201-point wealth grid, 100 time steps, and 5,000 Monte Carlo paths.
+Thus, $\varphi_t$ is dollar risky exposure and $\dot\varphi_t$ is the signed dollar trading-rate control.
+The dot labels the control and is not the ordinary time derivative of the diffusion $\varphi_t$.
+The exposure state evolves as
 
-| Result | Inactive | Active |
+$$
+d\varphi_t
+=\dot\varphi_t\,dt
++\varphi_t(\mu\,dt+\sigma\,dB_t).
+$$
+
+The two portfolio-adjustment experiments have different economic interpretations.
+
+- **Quadratic regularization:** $\Lambda\dot\varphi_t^2/2$, with $\Lambda=0.01$, is an objective regularizer that smooths adjustment.
+  It is not a cash execution cost and is not deducted from wealth.
+- **Square-root price impact:** execution cost is proportional to $|\dot\varphi_t|^{3/2}$, with $\Lambda_{3/2}=0.004472135955$.
+  It changes the execution price and is deducted from wealth.
+
+## Reproducibility protocol
+
+The notebooks separate policy selection from final evaluation.
+
+1. The HJB policy and CVaR parameters are selected using the search sample.
+2. Where indicated below, an independent calibration or holdout sample is used to check feasibility and choose a small numerical safety buffer.
+3. The policy, threshold, and multiplier are then frozen.
+4. A fresh 50,000-path sample is generated for the final out-of-sample (OOS) table and distributional figures.
+
+No final OOS path is used to select the reported policy, threshold, or multiplier.
+
+### Search, validation, and final evaluation
+
+| Experiment | Search sample | Additional validation before freezing | Final OOS sample | Final OOS seed |
+|---|---:|---:|---:|---:|
+| Complete market | 5,000 | 50,000-path calibration validation, seed `900013` | 50,000 | `1900013` |
+| Incomplete market | 5,000, plus 20,000-path search holdout | 50,000-path calibration validation, seed `900013` | 50,000 | `1900013` |
+| Quadratic regularization | 10,000 | 20 tuning seeds and 20 untouched holdout seeds, 10,000 paths per seed | 50,000 | `1900013` |
+| Square-root impact | 1,000 | None; the full nested search is run on the search sample | 50,000 | `900013` |
+
+For the incomplete-market search holdout, the stored seed is `686035552`.
+For quadratic regularization, tuning seeds are `101`--`120` and holdout seeds are `201`--`220`.
+All 40 quadratic-regularization validation runs are feasible; the least conservative loss CVaR is `-0.9400076101`.
+
+### Numerical resolution
+
+| Experiment | Time steps | HJB state grid | Control resolution | $\eta$ tolerance | $\lambda$ tolerance | CVaR residual tolerance | Maximum $\eta/\lambda$ iterations |
+|---|---:|---:|---|---:|---:|---:|---:|
+| Complete market | 100 | 201 points in $W$ | Bounded dollar exposure on $[-2,2]$; analytic quadratic minimization | $10^{-5}$ | $10^{-5}$ | $10^{-5}$ | 100 / 24 |
+| Incomplete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Bounded dollar exposure; policy capped at the Merton exposure | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ | 40 / 20 |
+| Quadratic regularization | 320 | $161\times193$ in $(W,\varphi)$ | Trading rate in $[-2,2]$ | $5\times10^{-4}$ | $10^{-4}$ | $10^{-4}$ | tolerance based / 12 |
+| Square-root impact | 200 | $80\times100$ in $(W,\varphi)$ | 167 rates: spacing $0.01$ on $[-0.75,0.75]$, with sparse tails to $[-4,4]$ | $10^{-5}$ | $10^{-7}$ | $10^{-6}$ | 32 / 32 |
+
+The complete-market wealth grid is constructed from pilot simulations.
+The incomplete-market grid is nonuniform because the terminal CVaR penalty has a kink near $W=-\eta$.
+The two portfolio-adjustment experiments solve a two-dimensional HJB equation in wealth and dollar risky exposure.
+
+## Common calibration
+
+| Parameter | Symbol | Value |
 |---|---:|---:|
-| Mean terminal wealth | 1.0323 | 1.0242 |
-| Lower-tail wealth CVaR | 0.8690 | 0.9400 |
-| Mean dollar risky exposure | 0.4000 | 0.3001 |
-| CVaR multiplier $$\lambda^*$$ | 0.0000 | 0.0666 |
+| Horizon | $T$ | 1 |
+| Initial wealth | $W_0$ | 1 |
+| Risk-free rate | $r$ | 0 |
+| Risky-asset drift | $\mu$ | 0.08 |
+| Risky-asset volatility | $\sigma$ | 0.20 |
+| Risk aversion | $\gamma$ | 5 |
+| CVaR confidence level | $\alpha$ | 0.95 |
+| Nonbinding CVaR limit | $c$ | -0.86 |
+| Binding CVaR limit | $c$ | -0.94 |
+| Merton dollar exposure | $\mu/(\gamma\sigma^2)$ | 0.40 |
+
+## Final out-of-sample results
+
+The following values are computed only after the relevant policy and calibration parameters have been frozen.
+
+| Experiment | Case | $c$ | $\widehat\lambda$ | Loss CVaR | $\mathbb E[W_T]$ | Average exposure | Feasibility residual |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Complete market | Nonbinding | -0.86 | 0 | -0.8671 | 1.0322 | 0.4000 | $-7.1\times10^{-3}$ |
+| Complete market | Binding | -0.94 | 0.0720 | -0.9406 | 1.0242 | 0.2981 | $-6.13\times10^{-4}$ |
+| Incomplete market | Nonbinding | -0.86 | 0 | -0.8620 | 1.0322 | 0.4000 | $-2.0\times10^{-3}$ |
+| Incomplete market | Binding | -0.94 | 0.1400 | -0.9405 | 1.0206 | 0.2549 | $-4.88\times10^{-4}$ |
+| Quadratic regularization | Nonbinding | -0.86 | 0 | -0.8971 | 1.0247 | 0.3104 | $-3.71\times10^{-2}$ |
+| Quadratic regularization | Binding | -0.94 | 0.06001 | -0.9413 | 1.0192 | 0.2415 | $-1.26\times10^{-3}$ |
+| Square-root impact | Nonbinding | -0.86 | 0 | -0.8839 | 1.0260 | 0.3500 | $-2.39\times10^{-2}$ |
+| Square-root impact | Binding | -0.94 | 0.07818 | -0.9409 | 1.0180 | 0.2422 | $-8.84\times10^{-4}$ |
+
+In the direct-exposure experiments, average exposure is the sample--time average of the simulated dollar-exposure control over all paths and decision dates.
+In the portfolio-adjustment experiments, it is the sample--time average of the exposure state over all paths and stored dates.
+Fresh Monte Carlo runs will exhibit ordinary sampling variation.
+
+## Running the notebooks
+
+### Google Colab
+
+Upload a notebook to Google Colab and select **Runtime > Run all**.
+The saved outputs can be inspected without rerunning the expensive search cells.
+
+### Local installation
+
+Python 3.10 or later is recommended.
+
+```bash
+git clone https://github.com/xf-shi/Dynamic-Portfolio-under-CVaR.git
+cd Dynamic-Portfolio-under-CVaR
+python -m venv .venv
+```
+
+On Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+jupyter lab
+```
+
+On macOS or Linux:
+
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+jupyter lab
+```
+
+The complete-, incomplete-, and quadratic-regularization notebooks default to stored, validation-buffered calibration parameters for a faster OOS rerun.
+Set `RUN_FULL_SEARCH=True` to repeat their full nested search.
+The square-root-impact notebook uses `RUN_FULL_OUTER_SEARCH=True` by default and therefore repeats the nested search before final OOS evaluation.
+
+The two-state HJB notebooks are substantially more computationally intensive than the wealth-only benchmarks.
+Run the notebooks from top to bottom because later plotting cells use policies and OOS samples created by earlier cells.
+
+## Stored figures
 
 <p align="center">
-  <img src="figures/complete_market.png" width="850" alt="Complete-market terminal wealth distributions for inactive and active CVaR policies">
+  <img src="figures/complete_market.png" width="47%" alt="Complete-market numerical results">
+  <img src="figures/incomplete_market.png" width="47%" alt="Incomplete-market numerical results">
 </p>
-
-The active policy compresses the left tail around the required wealth floor. This improvement is obtained by lowering average risky exposure from the Merton level of $$0.40$$ to approximately $$0.30$$.
-
-### 2. Incomplete Market with Nontraded Risk
-
-The incomplete-market experiment introduces an independent endowment shock:
-
-$$
-dW_t = \phi_t(\mu\,dt+\sigma\,dB_t)
-       +\beta^{\perp}dB_t^{\perp},
-\qquad B\perp B^{\perp},
-$$
-
-with $$\beta^{\perp}=0.02$$. The HJB state remains one-dimensional, but the wealth grid is concentrated near $$w=-\eta$$, where the terminal CVaR penalty has its kink. The multiplier is calibrated using 20,000 independent holdout paths.
-
-| Result | Inactive | Active |
-|---|---:|---:|
-| Mean terminal wealth | 1.0317 | 1.0205 |
-| Lower-tail wealth CVaR | 0.8642 | 0.9400 |
-| Mean dollar risky exposure | 0.4000 | 0.2601 |
-| CVaR multiplier $$\lambda^*$$ | 0.0000 | 0.1306 |
-
 <p align="center">
-  <img src="figures/incomplete_market.png" width="850" alt="Incomplete-market mean dollar risky exposure and active policy range">
+  <img src="figures/linear_market.png" width="47%" alt="Quadratic trading-rate regularization results">
+  <img src="figures/power_market.png" width="47%" alt="Square-root price-impact results">
 </p>
-
-Because the independent shock cannot be hedged through the stock, the active strategy is more conservative than in the complete market. Its mean dollar exposure falls to approximately $$0.26$$.
-
-### 3. Linear Control Dynamics
-
-The third notebook treats dollar risky exposure $$\varphi_t$$ as a state variable and its adjustment rate $$\dot\varphi_t$$ as the control, with parameter $$\Lambda = 0.01$$:
-
-$$
-\begin{aligned}
-dW_t &= \varphi_t(\mu\,dt+\sigma\,dB_t),\\
-dx_t &= \dot\varphi_t\,dt+\varphi_t(\mu\,dt+\sigma\,dB_t).
-\end{aligned}
-$$
-
-This produces a two-state HJB problem on a $$161\times193$$ wealth--exposure grid with 320 time steps. The calibrated active policy is feasible on all 40 tuning and holdout seeds, with worst-panel CVaR slack below $$10^{-5}$$.
-
-| Result | Inactive | Active |
-|---|---:|---:|
-| Mean terminal wealth | 1.0251 | 1.0197 |
-| Lower-tail wealth CVaR | 0.8958 | 0.9409 |
-| Standard deviation of terminal wealth | 0.0671 | 0.0553 |
-| Mean dollar risky exposure | 0.3105 | 0.2421 |
-
-<p align="center">
-  <img src="figures/linear_market.png" width="850" alt="Linear-control wealth, risky exposure, and trading speed in favorable and unfavorable markets">
-</p>
-
-The path comparison illustrates the state dependence of the solution. Exposure approaches the Merton level after favorable outcomes but is progressively reduced following an unfavorable market path.
-
-### 4. Square-Root Price Impact
-
-The final experiment adds a square-root impact model:
-
-$$
-\begin{aligned}
-dW_t &= \left(\mu \varphi_t-\frac{\Lambda}{q}|\dot\varphi_t|^q\right)dt
-       +\sigma \varphi_t\,dB_t,\\
-d\varphi_t &= \dot\varphi_t\,dt+\varphi_t(\mu\,dt+\sigma\,dB_t),
-\qquad q=\frac{3}{2}.
-\end{aligned}
-$$
-
-The saved calibration uses $$\Lambda=0.004472135955$$, a fine local action grid with spacing `0.01`, and no independent endowment shock. After optimization, both policies are evaluated on a final sample of 50,000 paths that is not used for calibration.
-
-| Out-of-sample result | Inactive | Active |
-|---|---:|---:|
-| Mean terminal wealth | 1.0260 | 1.0180 |
-| Lower-tail wealth CVaR | 0.8839 | 0.9409 |
-| Standard deviation of terminal wealth | 0.0726 | 0.0544 |
-| Mean dollar risky exposure | 0.3500 | 0.2422 |
-| Mean absolute trading rate | 0.4049 | 0.3439 |
-
-<p align="center">
-  <img src="figures/power_market.png" width="850" alt="Mean trading-rate controls under inactive and active CVaR policies with square-root price impact">
-</p>
-
-Price impact slows the initial movement toward the desired position. The active policy trades less aggressively and maintains a lower average exposure, reducing both terminal dispersion and downside risk.
-
-## Summary of Stored Results
-
-| Model | Active tail wealth CVaR | Inactive → active mean wealth | Inactive → active mean exposure |
-|---|---:|---:|---:|
-| Complete market | 0.9400 | 1.0323 → 1.0242 | 0.4000 → 0.3001 |
-| Incomplete market | 0.9400 | 1.0317 → 1.0205 | 0.4000 → 0.2601 |
-| Linear control | 0.9409 | 1.0251 → 1.0197 | 0.3105 → 0.2421 |
-| Square-root impact | 0.9409 | 1.0260 → 1.0180 | 0.3500 → 0.2422 |
-
-These numerical values are the outputs saved in the notebooks. Fresh Monte Carlo simulations have ordinary sampling variation, and the results may change when the grids, seeds, tolerances, or model parameters are modified.
 
 ## Citation
 
@@ -202,3 +245,9 @@ If you use this repository in academic work, please cite:
   year   = {2026},
   note   = {Manuscript}
 }
+```
+
+## References
+
+1. R. T. Rockafellar and S. Uryasev. "Optimization of Conditional Value-at-Risk." *The Journal of Risk*, 2(3):21--41, 2000. [doi:10.21314/JOR.2000.038](https://doi.org/10.21314/JOR.2000.038).
+2. R. T. Rockafellar and S. Uryasev. "Conditional Value-at-Risk for General Loss Distributions." *Journal of Banking & Finance*, 26(7):1443--1471, 2002. [doi:10.1016/S0378-4266(02)00271-6](https://doi.org/10.1016/S0378-4266(02)00271-6).
