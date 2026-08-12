@@ -44,7 +44,7 @@ $$
 and the risk constraint is
 
 $$
-\operatorname{CVaR}_{\alpha}(L_T)\le c,
+\mathrm{CVaR}_{\alpha}(L_T)\le c,
 \qquad \alpha=0.95.
 $$
 
@@ -52,7 +52,7 @@ All result tables below use the terminal-loss convention.
 The empirical feasibility residual is
 
 $$
-\operatorname{CVaR}_{\alpha}(-W_T)-c,
+\mathrm{CVaR}_{\alpha}(-W_T)-c,
 $$
 
 so a nonpositive residual is feasible.
@@ -231,23 +231,3 @@ Run the notebooks from top to bottom because later plotting cells use policies a
   <img src="figures/linear_market.png" width="47%" alt="Quadratic trading-rate regularization results">
   <img src="figures/power_market.png" width="47%" alt="Square-root price-impact results">
 </p>
-
-## Citation
-
-If you use this repository in academic work, please cite:
-
-> Anran Hu, Silvana M. Pesenti, and Xiaofei Shi. *Dynamic Portfolio Optimization under CVaR Constraints*. 2026.
-
-```bibtex
-@unpublished{hu2026dynamic,
-  title  = {Dynamic Portfolio Optimization under CVaR Constraints},
-  author = {Hu, Anran and Pesenti, Silvana M. and Shi, Xiaofei},
-  year   = {2026},
-  note   = {Manuscript}
-}
-```
-
-## References
-
-1. R. T. Rockafellar and S. Uryasev. "Optimization of Conditional Value-at-Risk." *The Journal of Risk*, 2(3):21--41, 2000. [doi:10.21314/JOR.2000.038](https://doi.org/10.21314/JOR.2000.038).
-2. R. T. Rockafellar and S. Uryasev. "Conditional Value-at-Risk for General Loss Distributions." *Journal of Banking & Finance*, 26(7):1443--1471, 2002. [doi:10.1016/S0378-4266(02)00271-6](https://doi.org/10.1016/S0378-4266(02)00271-6).
