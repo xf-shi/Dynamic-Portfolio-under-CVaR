@@ -9,8 +9,7 @@
 | [`Linear_Control_Dynamics_Plots.ipynb`](Linear_Control_Dynamics_Plots.ipynb) | Two-state HJB model with quadratic trading-rate regularization. |
 | [`Square_Root_Impact_Plots.ipynb`](Square_Root_Impact_Plots.ipynb) | Two-state HJB model with square-root execution-price impact. |
 | [`figures/`](figures/) | Stored summary figures used by the project webpage and README. |
-| [`index.html`](index.html) | Standalone project webpage. |
-| [`requirements.txt`](requirements.txt) | Minimal local Python environment. |
+
 
 ## Model and notation
 
