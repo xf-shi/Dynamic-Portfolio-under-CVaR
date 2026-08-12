@@ -52,7 +52,7 @@ The objective is
 
 $$
 J(\varphi)
-=\mathbb E\!\left[
+=\mathbb E \left[
 \int_0^T
 \left(
 \frac{\gamma}{2}\left((\sigma\varphi_t)^2+(\beta^{\perp})^2\right)
