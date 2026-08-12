@@ -1,26 +1,5 @@
 # Dynamic Portfolio Optimization under CVaR Constraints
 
-**Anran Hu**<sup>1</sup>, **Silvana M. Pesenti**<sup>2</sup>, and **Xiaofei Shi**<sup>2</sup>
-
-<sup>1</sup> Department of Industrial Engineering and Operations Research, Columbia University  
-<sup>2</sup> Department of Statistical Sciences, University of Toronto
-
-This repository contains the numerical experiments for the manuscript **Dynamic Portfolio Optimization under CVaR Constraints**.
-The code solves continuous-time portfolio problems with a hard terminal Conditional Value-at-Risk (CVaR) constraint in complete and incomplete markets and under gradual portfolio adjustment and nonlinear price impact.
-
-The four notebooks are self-contained and include the model, finite-difference Hamilton--Jacobi--Bellman (HJB) solver, CVaR-threshold search, multiplier search, Monte Carlo evaluation, and plotting code.
-Saved outputs allow the reported results to be inspected without rerunning the full calibration.
-
-[View the project webpage](index.html)
-
-## Main numerical findings
-
-- A nonbinding terminal CVaR constraint recovers the corresponding unconstrained benchmark.
-- When the constraint binds, the optimal policy reduces risky exposure after adverse outcomes while retaining more exposure in favorable states.
-- Independent nontraded risk strengthens this state-dependent de-risking response.
-- When exposure must be adjusted gradually, the binding constraint lowers both the desired position and the speed of adjustment.
-- The same qualitative mechanism remains visible under square-root price impact, where execution costs are deducted from wealth.
-
 ## Repository contents
 
 | File | Experiment |
