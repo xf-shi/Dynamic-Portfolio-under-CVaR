@@ -54,10 +54,10 @@ $$
 J(\varphi)
 =\mathbb E\!\left[
 \int_0^T
-\left{
-\frac{\gamma}{2}\left[(\sigma\varphi_t)^2+(\beta^{\perp})^2\right]
+\left(
+\frac{\gamma}{2}\left((\sigma\varphi_t)^2+(\beta^{\perp})^2\right)
 -\mu\varphi_t
-\right}dt
+\right) \ dt
 \right].
 $$
 
