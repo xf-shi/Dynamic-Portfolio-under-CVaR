@@ -54,9 +54,9 @@ $$
 J(\varphi)
 =\mathbb E\Big[
 \int_0^T
-\frac{\gamma}{2}\left[(\sigma\varphi_t)^2+(\beta^{\perp})^2\right]
+\frac{\gamma}{2}\left((\sigma\varphi_t)^2+(\beta^{\perp})^2\right)
 -\mu\varphi_t
-\,dt
+dt
 \Big].
 $$
 
