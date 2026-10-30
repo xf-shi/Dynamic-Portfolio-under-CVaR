@@ -52,18 +52,23 @@ $\beta^{\perp}=0.02$, with $B^{\perp}$ independent of $B$. The objective is
 
 $$
 J(\varphi)
-=\mathbb E\left[
+=\mathbb E\Big[
 \int_0^T
-\left\{
 \frac{\gamma}{2}\left[(\sigma\varphi_t)^2+(\beta^{\perp})^2\right]
 -\mu\varphi_t
-\right\}\,dt
-\right].
+\,dt
+\Big].
 $$
 
 The unconstrained Merton dollar exposure is
 $\bar\varphi=\mu/(\gamma\sigma^2)=0.40$. It is a benchmark, **not an additional
 exposure cap**. The numerical exposure bounds remain $[-2.00,2.00]$.
+
+The complete- and incomplete-market experiments now use the same direct-exposure
+search protocol: the same time discretization, wealth-grid resolution,
+threshold and multiplier tolerances, and independent multiplier-selection
+sample. This makes the complete-market benchmark directly comparable with the
+$\beta^{\perp}=0$ endpoint of the incomplete-market comparative statics.
 
 ### Trading-rate regularization and square-root price impact
 
@@ -100,11 +105,12 @@ The two specifications have different economic interpretations:
 
 Policy selection and final evaluation use separate simulation samples:
 
-1. The nested search selects the multiplier, threshold, and HJB feedback policy
-   using calibration data.
-2. The incomplete-market experiment additionally uses 20,000 separate paths for
-   multiplier selection. These paths are part of calibration.
-3. The selected parameters and policy are frozen.
+1. For each candidate multiplier, the HJB feedback policy and Rockafellar--Uryasev
+   threshold are computed from the training sample.
+2. In both direct-exposure experiments, 20,000 independent paths are used to
+   select the raw dual root through the CVaR residual. These paths are part of
+   calibration, not final evaluation.
+3. The selected multiplier, threshold, and feedback policy are frozen.
 4. The frozen policy is evaluated on 50,000 independent out-of-sample (OOS)
    paths for the reported summary statistics and distributional figures.
 
@@ -113,7 +119,7 @@ the final OOS sample. Empirical OOS exceedances are reported unchanged.
 
 | Experiment | Search paths | Additional multiplier-selection paths | Final OOS paths | Final OOS seed |
 | --- | ---: | ---: | ---: | ---: |
-| Complete market | 5,000 | None | 50,000 | `1900013` |
+| Complete market | 5,000 | 20,000; seed `686035552` | 50,000 | `1900013` |
 | Incomplete market | 5,000 | 20,000; seed `686035552` | 50,000 | `1900013` |
 | Quadratic regularization | 10,000 | None | 50,000 | `1900013` |
 | Square-root impact | 1,000 | None | 50,000 | `900013` |
@@ -124,15 +130,16 @@ The following are the effective settings used by the current solvers.
 
 | Experiment | Time steps | HJB state grid | Control domain and minimization | $\eta$ tolerance | $\lambda$ tolerance | CVaR residual tolerance | Maximum $\eta/\lambda$ iterations |
 | --- | ---: | --- | --- | ---: | ---: | ---: | --- |
-| Complete market | 100 | 201 points in $W$ | Dollar exposure in $[-2.00,2.00]$; analytic quadratic minimization with boundary checks | $10^{-5}$ | $10^{-5}$ | $10^{-5}$ | 100 / 24 |
-| Incomplete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2.00,2.00]$; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ | 40 / 20 |
+| Complete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2.00,2.00]$; analytic quadratic minimization with boundary checks; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ | 40 / 20 |
+| Incomplete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2.00,2.00]$; analytic quadratic minimization with boundary checks; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ | 40 / 20 |
 | Quadratic regularization | 320 | $161\times193$ in $(W,\varphi)$ | Trading rate in $[-2.00,2.00]$; bounded quadratic minimization | $5\times10^{-4}$ | $10^{-4}$ | $10^{-4}$ | Tolerance-based / 12 |
 | Square-root impact | 200 | $80\times100$ in $(W,\varphi)$ | Trading rate in $[-4.00,4.00]$; analytic Hamiltonian minimization with boundary checks | $10^{-5}$ | $10^{-7}$ | $10^{-6}$ | 32 / 32 |
 
-The complete-market wealth grid is constructed from pilot simulations. The
-incomplete-market grid is rebuilt around the candidate terminal-loss threshold.
-The trading-rate models use wealth and dollar risky exposure as the two HJB
-states and retain exposure-state bounds of $[-2.00,2.00]$.
+For the direct-exposure experiments, the wealth range is initialized from pilot
+simulations and, for positive multipliers, the 201-point grid is concentrated
+near the terminal CVaR kink $W=-\eta$. The grid is rebuilt as the candidate
+threshold changes. The trading-rate models use wealth and dollar risky exposure
+as the two HJB states and retain exposure-state bounds of $[-2.00,2.00]$.
 
 The square-root-impact script retains legacy action-grid settings, but its
 current HJB solver minimizes the trading-rate Hamiltonian analytically rather
@@ -161,20 +168,26 @@ implementations.
 ## Reference out-of-sample results
 
 The following estimates use the frozen policies and independent OOS samples.
-Financial summary statistics are displayed to two decimal places. Residuals
-are computed from unrounded estimates and shown in scientific notation so that
-small budget exceedances remain visible.
+Financial summary statistics are displayed to two decimal places. Residuals are
+computed from unrounded estimates and shown in scientific notation so that small
+budget exceedances remain visible.
 
 | Experiment | Case | $c$ | $\widehat\lambda$ | Loss CVaR | $\mathbb E[W_T]$ | Average exposure | OOS residual |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Complete market | Nonbinding | -0.86 | 0.00 | -0.87 | 1.03 | 0.40 | `-7.06e-03` |
-| Complete market | Binding | -0.94 | 0.07 | -0.94 | 1.02 | 0.30 | `+7.75e-04` |
+| Complete market | Binding | -0.94 | 0.05 | -0.94 | 1.02 | 0.31 | `+8.22e-04` |
 | Incomplete market | Nonbinding | -0.86 | 0.00 | -0.86 | 1.03 | 0.40 | `-1.97e-03` |
 | Incomplete market | Binding | -0.94 | 0.13 | -0.94 | 1.02 | 0.26 | `+1.75e-03` |
 | Quadratic regularization | Nonbinding | -0.86 | 0.00 | -0.90 | 1.02 | 0.31 | `-3.71e-02` |
 | Quadratic regularization | Binding | -0.94 | 0.05 | -0.94 | 1.02 | 0.24 | `-4.26e-04` |
 | Square-root impact | Nonbinding | -0.86 | 0.00 | -0.88 | 1.03 | 0.35 | `-2.39e-02` |
 | Square-root impact | Binding | -0.94 | 0.08 | -0.94 | 1.02 | 0.24 | `-8.84e-04` |
+
+For the binding complete-market case, the selected raw multiplier is
+$\widehat\lambda=0.05474853515625$. On the independent 50,000-path OOS sample,
+the corresponding loss CVaR is $-0.9391784414$, the average risky exposure is
+$0.3061333656$, and the empirical residual is $8.22\times10^{-4}$. These OOS
+quantities are reported without retuning the multiplier.
 
 Full-precision values, including the threshold estimates, are available in
 [`reference_results.csv`](reference_results.csv). Reference values are used for
@@ -204,7 +217,6 @@ Interim CVaR curves report unconditional loss CVaR over time. The optimization
 imposes the risk constraint only at maturity; those curves are descriptive
 diagnostics of the computed policy.
 
-## 
 ## Stored figures
 
 These overview images show the current reference figures. Running the scripts
