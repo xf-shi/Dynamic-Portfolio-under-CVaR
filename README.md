@@ -13,7 +13,7 @@ The repository is organized around four standalone Python scripts. Each script c
 | File | Experiment |
 | --- | --- |
 | `complete_market.py` | Section 5.1: complete-market benchmark, including nonbinding/binding calibrations and path diagnostics. |
-| `incomplete_market.py` | Sections 5.2–5.3: incomplete-market benchmark with nontraded risk and the comparative statics in \(\beta^\perp\) and the CVaR limit \(c\). |
+| `incomplete_market.py` | Sections 5.2–5.3: incomplete-market benchmark with nontraded risk and the comparative statics in $\beta^\perp$ and the CVaR limit $c$. |
 | `quadratic_regularization.py` | Dynamic portfolio management with quadratic trading-rate regularization. |
 | `square_root_impact.py` | Dynamic portfolio management with square-root execution-price impact. |
 
@@ -25,6 +25,7 @@ Terminal loss is
 
 $$
 L_T=-W_T,
+
 $$
 
 and the risk constraint is
@@ -32,24 +33,26 @@ and the risk constraint is
 $$
 \mathrm{CVaR}_{\alpha}(L_T)\le c,
 \qquad \alpha=0.95.
+
 $$
 
 The two baseline risk budgets are
 
-- **nonbinding:** \(c=-0.86\);
-- **binding:** \(c=-0.94\).
+- **nonbinding:** $c=-0.86$;
+- **binding:** $c=-0.94$.
 
 The empirical feasibility residual reported in the numerical experiments is
 
 $$
 \widehat{\mathrm{CVaR}}_{\alpha}(-W_T)-c.
+
 $$
 
 A nonpositive residual is empirically feasible on that simulation sample. A small positive residual on an independent evaluation sample is reported as is; it is not used to retune the policy.
 
 ### Direct-exposure benchmarks
 
-In the complete- and incomplete-market experiments, \(\varphi_t\) denotes dollar risky exposure:
+In the complete- and incomplete-market experiments, $\varphi_t$ denotes dollar risky exposure:
 
 $$
 dW_t
@@ -57,16 +60,17 @@ dW_t
 \varphi_t(\mu\,dt+\sigma\,dB_t)
 +
 \beta^\perp dB_t^\perp.
+
 $$
 
-The complete-market benchmark sets \(\beta^\perp=0\). The baseline incomplete-market experiment uses \(\beta^\perp=0.02\), where \(B^\perp\) is independent of the traded Brownian motion \(B\).
+The complete-market benchmark sets $\beta^\perp=0$. The baseline incomplete-market experiment uses $\beta^\perp=0.02$, where $B^\perp$ is independent of the traded Brownian motion $B$.
 
 The running objective is
 
 $$
 J(\varphi)
 =
-\mathbb E\!\left[
+\mathbb{E}\left[
 \int_0^T
 \left\{
 \frac{\gamma}{2}
@@ -76,19 +80,20 @@ J(\varphi)
 -\mu\varphi_t
 \right\}dt
 \right].
+
 $$
 
 The common calibration is
 
 | Parameter | Symbol | Value |
 | --- | --- | ---: |
-| Horizon | \(T\) | 1 |
-| Initial wealth | \(W_0\) | 1.00 |
-| Risk-free rate | \(r\) | 0.00 |
-| Risky-asset drift | \(\mu\) | 0.08 |
-| Risky-asset volatility | \(\sigma\) | 0.20 |
-| Risk aversion | \(\gamma\) | 5 |
-| CVaR level | \(\alpha\) | 0.95 |
+| Horizon | $T$ | 1 |
+| Initial wealth | $W_0$ | 1.00 |
+| Risk-free rate | $r$ | 0.00 |
+| Risky-asset drift | $\mu$ | 0.08 |
+| Risky-asset volatility | $\sigma$ | 0.20 |
+| Risk aversion | $\gamma$ | 5 |
+| CVaR level | $\alpha$ | 0.95 |
 
 The unconstrained Merton dollar exposure is
 
@@ -98,25 +103,28 @@ $$
 \frac{\mu}{\gamma\sigma^2}
 =
 0.40.
+
 $$
 
 This is a **benchmark only**, not a control cap. The direct-exposure experiments retain the numerical action bounds
 
 $$
 -2\le \varphi_t\le 2.
+
 $$
 
 ### Trading-rate models
 
-For the portfolio-management extensions, let \(\phi_t\) denote the number of shares and define
+For the portfolio-management extensions, let $\phi_t$ denote the number of shares and define
 
 $$
 \varphi_t=\phi_tS_t,
 \qquad
 \dot\varphi_t=\dot\phi_tS_t.
+
 $$
 
-Here \(\dot\varphi_t\) denotes the signed dollar trading-rate control. The exposure state evolves as
+Here $\dot\varphi_t$ denotes the signed dollar trading-rate control. The exposure state evolves as
 
 $$
 d\varphi_t
@@ -124,12 +132,13 @@ d\varphi_t
 \dot\varphi_t\,dt
 +
 \varphi_t(\mu\,dt+\sigma\,dB_t).
+
 $$
 
 The two specifications are:
 
-- **Quadratic regularization:** \(\Lambda\dot\varphi_t^2/2\), with \(\Lambda=0.01\). This is an objective regularizer and is not deducted from wealth.
-- **Square-root price impact:** \(\Lambda_{3/2}|\dot\varphi_t|^{3/2}/(3/2)\), with \(\Lambda_{3/2}=0.004472135955\). This cost enters the objective and is also deducted from wealth through the execution-price adjustment.
+- **Quadratic regularization:** $\Lambda\dot\varphi_t^2/2$, with $\Lambda=0.01$. This is an objective regularizer and is not deducted from wealth.
+- **Square-root price impact:** $\Lambda_{3/2}|\dot\varphi_t|^{3/2}/(3/2)$, with $\Lambda_{3/2}=0.004472135955$. This cost enters the objective and is also deducted from wealth through the execution-price adjustment.
 
 ## Calibration and independent evaluation
 
@@ -153,20 +162,20 @@ For the direct-exposure experiments, the multiplier-selection sample uses seed `
 
 ## Numerical resolution
 
-| Experiment | Time steps | HJB state grid | Control | \(\eta\) tolerance | \(\lambda\) tolerance | CVaR residual tolerance |
+| Experiment | Time steps | HJB state grid | Control | $\eta$ tolerance | $\lambda$ tolerance | CVaR residual tolerance |
 | --- | ---: | --- | --- | ---: | ---: | ---: |
-| Complete market | 100 | 201 nonuniform points in \(W\), concentrated near \(W=-\eta\) | Dollar exposure in \([-2,2]\); no Merton cap | \(5\times10^{-4}\) | \(10^{-6}\) | \(10^{-5}\) |
-| Incomplete market | 100 | 201 nonuniform points in \(W\), concentrated near \(W=-\eta\) | Dollar exposure in \([-2,2]\); no Merton cap | \(5\times10^{-4}\) | \(10^{-6}\) | \(10^{-5}\) |
-| Quadratic regularization | 320 | \(161\times193\) in \((W,\varphi)\) | Trading rate in \([-2,2]\) | \(5\times10^{-4}\) | \(10^{-4}\) | \(10^{-4}\) |
-| Square-root impact | 200 | \(80\times100\) in \((W,\varphi)\) | Trading rate in \([-4,4]\) | \(10^{-5}\) | \(10^{-7}\) | \(10^{-6}\) |
+| Complete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2,2]$; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ |
+| Incomplete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2,2]$; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ |
+| Quadratic regularization | 320 | $161\times193$ in $(W,\varphi)$ | Trading rate in $[-2,2]$ | $5\times10^{-4}$ | $10^{-4}$ | $10^{-4}$ |
+| Square-root impact | 200 | $80\times100$ in $(W,\varphi)$ | Trading rate in $[-4,4]$ | $10^{-5}$ | $10^{-7}$ | $10^{-6}$ |
 
-The direct-exposure wealth grids are rebuilt around the candidate terminal-loss kink \(W=-\eta\). Numba acceleration is used when available and implements the same finite-difference formulas as the NumPy version.
+The direct-exposure wealth grids are rebuilt around the candidate terminal-loss kink $W=-\eta$. Numba acceleration is used when available and implements the same finite-difference formulas as the NumPy version.
 
 ## Reference out-of-sample results
 
 The following values are from frozen policies evaluated on independent OOS samples.
 
-| Experiment | Case | \(c\) | \(\widehat\lambda\) | Loss CVaR | \(\mathbb E[W_T]\) | Average exposure | OOS residual |
+| Experiment | Case | $c$ | $\widehat\lambda$ | Loss CVaR | $\mathbb{E}[W_T]$ | Average exposure | OOS residual |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Complete market | Nonbinding | -0.86 | 0.00000 | -0.8671 | 1.0322 | 0.4000 | `-7.06e-03` |
 | Complete market | Binding | -0.94 | 0.05475 | -0.9392 | 1.0248 | 0.3061 | `+8.22e-04` |
@@ -191,18 +200,21 @@ p(c)
 J(\varphi):
 \mathrm{CVaR}_{\alpha}(-W_T)\le c
 \right\}.
+
 $$
 
 Under the strong-duality assumptions of the paper,
 
 $$
 -\lambda^\star(c)\in\partial p(c).
+
 $$
 
-Thus \(\lambda^\star\) is the shadow price of the CVaR budget. When \(p\) is differentiable,
+Thus $\lambda^\star$ is the shadow price of the CVaR budget. When $p$ is differentiable,
 
 $$
 \lambda^\star(c)=-p'(c).
+
 $$
 
 For a fixed market environment, tightening the CVaR budget therefore yields a nondecreasing optimal shadow price. This monotonicity is a theoretical consequence of the value-function sensitivity relation.
@@ -213,9 +225,10 @@ The numerical experiment varies
 
 $$
 c\in\{-0.86,-0.88,-0.90,-0.92,-0.94\}.
+
 $$
 
-| \(c\) | \(\widehat\lambda\), complete market | \(\widehat\lambda\), \(\beta^\perp=0.02\) |
+| $c$ | $\widehat\lambda$, complete market | $\widehat\lambda$, $\beta^\perp=0.02$ |
 | ---: | ---: | ---: |
 | -0.86 | 0.0000 | 0.0000 |
 | -0.88 | 0.0050 | 0.0082 |
@@ -227,15 +240,16 @@ The shadow price rises as the CVaR limit is tightened. Once the constraint binds
 
 ### Sensitivity to nontraded background risk
 
-Holding \(c=-0.94\) fixed, the experiment varies
+Holding $c=-0.94$ fixed, the experiment varies
 
 $$
 \beta^\perp
 \in
 \{0,0.005,0.010,0.015,0.020,0.025\}.
+
 $$
 
-| \(\beta^\perp\) | \(\widehat\lambda\) | Average risky exposure |
+| $\beta^\perp$ | $\widehat\lambda$ | Average risky exposure |
 | ---: | ---: | ---: |
 | 0.000 | 0.0548 | 0.3061 |
 | 0.005 | 0.0578 | 0.3041 |
@@ -244,15 +258,15 @@ $$
 | 0.020 | 0.1252 | 0.2633 |
 | 0.025 | 0.2012 | 0.2274 |
 
-Across this numerical grid, larger nontraded risk is associated with a higher shadow price and lower average risky exposure. This monotonicity in \(\beta^\perp\) is a **numerical finding**, not a general theoretical claim.
+Across this numerical grid, larger nontraded risk is associated with a higher shadow price and lower average risky exposure. This monotonicity in $\beta^\perp$ is a **numerical finding**, not a general theoretical claim.
 
-At \(\beta^\perp=0.025\), the maximum simulated exposure reaches the numerical upper action bound \(2\). The endpoint is therefore useful as a sensitivity diagnostic, but the main qualitative pattern is already visible well before that boundary is reached.
+At $\beta^\perp=0.025$, the maximum simulated exposure reaches the numerical upper action bound $2$. The endpoint is therefore useful as a sensitivity diagnostic, but the main qualitative pattern is already visible well before that boundary is reached.
 
 ## Path diagnostics
 
 The direct-exposure experiments illustrate that the CVaR constraint does not simply impose a constant proportional reduction in risky exposure.
 
-The path figures include representative favorable and unfavorable realizations together with the Merton benchmark \(\bar\varphi=0.40\). In particular, the uncapped feedback policy can exhibit a lower-tail **rebound** near maturity: along selected unfavorable paths, risky exposure can rise above the static Merton benchmark even though average exposure remains substantially below it.
+The path figures include representative favorable and unfavorable realizations together with the Merton benchmark $\bar\varphi=0.40$. In particular, the uncapped feedback policy can exhibit a lower-tail **rebound** near maturity: along selected unfavorable paths, risky exposure can rise above the static Merton benchmark even though average exposure remains substantially below it.
 
 The selected lower-tail path is a diagnostic realization rather than a claim about typical behavior. The code identifies such paths explicitly from an independent simulation sample.
 
@@ -273,7 +287,7 @@ Each script generates its own numerical outputs and figures.
 
 - Numeric labels, axes, and legends in manuscript figures use two decimal places.
 - Rounding affects display only; optimization and simulation retain full precision.
-- The dashed horizontal line in direct-exposure path figures is the unconstrained Merton benchmark \(0.40\).
+- The dashed horizontal line in direct-exposure path figures is the unconstrained Merton benchmark $0.40$.
 - Interim CVaR curves are unconditional diagnostics. The optimization imposes the CVaR constraint only at maturity.
 
 ## Reproducibility notes
@@ -282,4 +296,4 @@ Each script generates its own numerical outputs and figures.
 - No Merton exposure cap is imposed.
 - No final-OOS feasibility buffer is used.
 - Small positive OOS residuals are Monte Carlo evaluation outcomes and are reported without adjustment.
-- The complete- and incomplete-market benchmarks use the same direct-exposure numerical protocol, making the \(\beta^\perp=0\) benchmark directly comparable with the nontraded-risk sensitivity experiment.
+- The complete- and incomplete-market benchmarks use the same direct-exposure numerical protocol, making the $\beta^\perp=0$ benchmark directly comparable with the nontraded-risk sensitivity experiment.
