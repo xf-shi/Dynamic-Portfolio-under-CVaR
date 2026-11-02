@@ -23,18 +23,16 @@ All four experiments are recomputed from scratch. No precomputed policy is requi
 
 Terminal loss is
 
-$$
+```math
 L_T=-W_T,
-
-$$
+```
 
 and the risk constraint is
 
-$$
+```math
 \mathrm{CVaR}_{\alpha}(L_T)\le c,
 \qquad \alpha=0.95.
-
-$$
+```
 
 The two baseline risk budgets are
 
@@ -43,10 +41,9 @@ The two baseline risk budgets are
 
 The empirical feasibility residual reported in the numerical experiments is
 
-$$
+```math
 \widehat{\mathrm{CVaR}}_{\alpha}(-W_T)-c.
-
-$$
+```
 
 A nonpositive residual is empirically feasible on that simulation sample. A small positive residual on an independent evaluation sample is reported as is; it is not used to retune the policy.
 
@@ -54,20 +51,19 @@ A nonpositive residual is empirically feasible on that simulation sample. A smal
 
 In the complete- and incomplete-market experiments, $\varphi_t$ denotes dollar risky exposure:
 
-$$
+```math
 dW_t
 =
 \varphi_t(\mu\,dt+\sigma\,dB_t)
 +
 \beta^\perp dB_t^\perp.
-
-$$
+```
 
 The complete-market benchmark sets $\beta^\perp=0$. The baseline incomplete-market experiment uses $\beta^\perp=0.02$, where $B^\perp$ is independent of the traded Brownian motion $B$.
 
 The running objective is
 
-$$
+```math
 J(\varphi)
 =
 \mathbb{E}\left[
@@ -80,8 +76,7 @@ J(\varphi)
 -\mu\varphi_t
 \right\}dt
 \right].
-
-$$
+```
 
 The common calibration is
 
@@ -97,43 +92,39 @@ The common calibration is
 
 The unconstrained Merton dollar exposure is
 
-$$
+```math
 \bar\varphi
 =
 \frac{\mu}{\gamma\sigma^2}
 =
 0.40.
-
-$$
+```
 
 This is a **benchmark only**, not a control cap. The direct-exposure experiments retain the numerical action bounds
 
-$$
+```math
 -2\le \varphi_t\le 2.
-
-$$
+```
 
 ### Trading-rate models
 
 For the portfolio-management extensions, let $\phi_t$ denote the number of shares and define
 
-$$
+```math
 \varphi_t=\phi_tS_t,
 \qquad
 \dot\varphi_t=\dot\phi_tS_t.
-
-$$
+```
 
 Here $\dot\varphi_t$ denotes the signed dollar trading-rate control. The exposure state evolves as
 
-$$
+```math
 d\varphi_t
 =
 \dot\varphi_t\,dt
 +
 \varphi_t(\mu\,dt+\sigma\,dB_t).
-
-$$
+```
 
 The two specifications are:
 
@@ -192,7 +183,7 @@ Financial quantities shown in manuscript figures are rounded to two decimal plac
 
 For a fixed market environment, define
 
-$$
+```math
 p(c)
 =
 \inf_{\varphi}
@@ -200,22 +191,19 @@ p(c)
 J(\varphi):
 \mathrm{CVaR}_{\alpha}(-W_T)\le c
 \right\}.
-
-$$
+```
 
 Under the strong-duality assumptions of the paper,
 
-$$
+```math
 -\lambda^\star(c)\in\partial p(c).
-
-$$
+```
 
 Thus $\lambda^\star$ is the shadow price of the CVaR budget. When $p$ is differentiable,
 
-$$
+```math
 \lambda^\star(c)=-p'(c).
-
-$$
+```
 
 For a fixed market environment, tightening the CVaR budget therefore yields a nondecreasing optimal shadow price. This monotonicity is a theoretical consequence of the value-function sensitivity relation.
 
@@ -223,10 +211,9 @@ For a fixed market environment, tightening the CVaR budget therefore yields a no
 
 The numerical experiment varies
 
-$$
+```math
 c\in\{-0.86,-0.88,-0.90,-0.92,-0.94\}.
-
-$$
+```
 
 | $c$ | $\widehat\lambda$, complete market | $\widehat\lambda$, $\beta^\perp=0.02$ |
 | ---: | ---: | ---: |
@@ -242,12 +229,11 @@ The shadow price rises as the CVaR limit is tightened. Once the constraint binds
 
 Holding $c=-0.94$ fixed, the experiment varies
 
-$$
+```math
 \beta^\perp
 \in
 \{0,0.005,0.010,0.015,0.020,0.025\}.
-
-$$
+```
 
 | $\beta^\perp$ | $\widehat\lambda$ | Average risky exposure |
 | ---: | ---: | ---: |
