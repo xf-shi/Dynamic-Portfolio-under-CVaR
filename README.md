@@ -267,19 +267,3 @@ python quadratic_regularization.py
 python square_root_impact.py
 ```
 
-Each script generates its own numerical outputs and figures.
-
-## Figure conventions
-
-- Numeric labels, axes, and legends in manuscript figures use two decimal places.
-- Rounding affects display only; optimization and simulation retain full precision.
-- The dashed horizontal line in direct-exposure path figures is the unconstrained Merton benchmark $0.40$.
-- Interim CVaR curves are unconditional diagnostics. The optimization imposes the CVaR constraint only at maturity.
-
-## Reproducibility notes
-
-- The final OOS sample is never used to select or modify the reported policy.
-- No Merton exposure cap is imposed.
-- No final-OOS feasibility buffer is used.
-- Small positive OOS residuals are Monte Carlo evaluation outcomes and are reported without adjustment.
-- The complete- and incomplete-market benchmarks use the same direct-exposure numerical protocol, making the $\beta^\perp=0$ benchmark directly comparable with the nontraded-risk sensitivity experiment.
