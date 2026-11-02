@@ -30,7 +30,7 @@ $$
 and the risk constraint is
 
 $$
-\operatorname{CVaR}_{\alpha}(L_T)\le c,
+\mathrm{CVaR}_{\alpha}(L_T)\le c,
 \qquad \alpha=0.95.
 $$
 
@@ -42,7 +42,7 @@ The two baseline risk budgets are
 The empirical feasibility residual reported in the numerical experiments is
 
 $$
-\widehat{\operatorname{CVaR}}_{\alpha}(-W_T)-c.
+\widehat{\mathrm{CVaR}}_{\alpha}(-W_T)-c.
 $$
 
 A nonpositive residual is empirically feasible on that simulation sample. A small positive residual on an independent evaluation sample is reported as is; it is not used to retune the policy.
@@ -189,7 +189,7 @@ p(c)
 \inf_{\varphi}
 \left\{
 J(\varphi):
-\operatorname{CVaR}_{\alpha}(-W_T)\le c
+\mathrm{CVaR}_{\alpha}(-W_T)\le c
 \right\}.
 $$
 
