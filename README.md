@@ -162,23 +162,6 @@ For the direct-exposure experiments, the multiplier-selection sample uses seed `
 
 The direct-exposure wealth grids are rebuilt around the candidate terminal-loss kink $W=-\eta$. Numba acceleration is used when available and implements the same finite-difference formulas as the NumPy version.
 
-## Reference out-of-sample results
-
-The following values are from frozen policies evaluated on independent OOS samples.
-
-| Experiment | Case | $c$ | $\widehat\lambda$ | Loss CVaR | $\mathbb{E}[W_T]$ | Average exposure | OOS residual |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Complete market | Nonbinding | -0.86 | 0.00000 | -0.8671 | 1.0322 | 0.4000 | `-7.06e-03` |
-| Complete market | Binding | -0.94 | 0.05475 | -0.9392 | 1.0248 | 0.3061 | `+8.22e-04` |
-| Incomplete market | Nonbinding | -0.86 | 0.00000 | -0.8620 | 1.0322 | 0.4000 | `-1.97e-03` |
-| Incomplete market | Binding | -0.94 | 0.1252 | -0.9382 | 1.0213 | 0.2637 | `+1.75e-03` |
-| Quadratic regularization | Nonbinding | -0.86 | 0.0000 | -0.90 | 1.02 | 0.31 | `-3.71e-02` |
-| Quadratic regularization | Binding | -0.94 | 0.05 | -0.94 | 1.02 | 0.24 | `-4.26e-04` |
-| Square-root impact | Nonbinding | -0.86 | 0.0000 | -0.88 | 1.03 | 0.35 | `-2.39e-02` |
-| Square-root impact | Binding | -0.94 | 0.08 | -0.94 | 1.02 | 0.24 | `-8.84e-04` |
-
-Financial quantities shown in manuscript figures are rounded to two decimal places. The optimization and stored numerical outputs retain full precision.
-
 ## Sensitivity analysis and the shadow price
 
 For a fixed market environment, define
