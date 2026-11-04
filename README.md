@@ -239,14 +239,6 @@ The path figures include representative favorable and unfavorable realizations t
 
 The selected lower-tail path is a diagnostic realization rather than a claim about typical behavior. The code identifies such paths explicitly from an independent simulation sample.
 
-## Running the experiments
 
-Run each experiment directly:
-
-```bash
-python complete_market.py
-python incomplete_market.py
-python quadratic_regularization.py
-python square_root_impact.py
 ```
 
