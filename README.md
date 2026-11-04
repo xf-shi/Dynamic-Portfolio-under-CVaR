@@ -8,17 +8,17 @@ A key economic interpretation is that the optimal multiplier is the **shadow pri
 
 ## Repository structure
 
-The repository is organized around four standalone Python scripts. Each script contains its own model specification, solver, parameter search, simulation, and plotting code; no project-specific helper module is required.
+The repository is organized around four standalone Python scripts. Each script contains the model specification, numerical solver, parameter search, simulation, and plotting routines needed for the corresponding experiment; no project-specific helper module is required.
 
-| File | Experiment |
+| **File** | **Experiment** |
 | --- | --- |
-| `complete_market.py` | Section 5.1: complete-market benchmark, including nonbinding/binding calibrations and path diagnostics. |
-| `incomplete_market.py` | Sections 5.2–5.3: incomplete-market benchmark with nontraded risk and the comparative statics in $\beta^\perp$ and the CVaR limit $c$. |
-| `quadratic_regularization.py` | Dynamic portfolio management with quadratic trading-rate regularization. |
-| `square_root_impact.py` | Dynamic portfolio management with square-root execution-price impact. |
+| `complete_market.py` | Section 5.1: complete-market benchmark, including the nonbinding and binding calibrations and path diagnostics. |
+| `incomplete_market.py` | Sections 5.2: incomplete-market benchmark with nontraded risk and the comparative statics in $\beta^\perp$ and the CVaR limit $c$. |
+| `comparative_statics.py` | Section 5.3: comparative statics in nontraded background risk $\beta^\perp$ and the terminal CVaR limit $c$. The script recomputes the optimal multiplier and average risky exposure for every parameter value. |
+| `quadratic_regularization.py` | Section 6.1: portfolio adjustment with quadratic trading-rate regularization. |
+| `square_root_impact.py` | Section 6.2: portfolio adjustment with square-root execution-price impact. |
 
-All four experiments are recomputed from scratch. No precomputed policy is required.
-
+The numerical solutions are recomputed directly from the model and solver specifications in each script. 
 ## Model and notation
 
 Terminal loss is
