@@ -1,244 +1,128 @@
 # Dynamic Portfolio Optimization under CVaR Constraints
 
-Companion code for **“Dynamic Portfolio Optimization under CVaR Constraints”** by Anran Hu, Silvana M. Pesenti, and Xiaofei Shi.
+Companion code for **"Dynamic Portfolio Optimization under CVaR Constraints"** by Anran Hu, Silvana M. Pesenti, and Xiaofei Shi.
 
-The paper studies continuous-time portfolio optimization subject to a hard Conditional Value-at-Risk (CVaR) constraint on terminal loss. Using the Rockafellar–Uryasev auxiliary-threshold representation, the constrained problem is reformulated through a Lagrangian dual problem. Numerically, the method combines a stochastic-control solver with an inner search over the CVaR threshold and an outer search over the dual multiplier.
-
-A key economic interpretation is that the optimal multiplier is the **shadow price of the CVaR budget**: it measures the marginal value of relaxing the tail-risk constraint.
+The scripts solve the portfolio problems in Sections 5-6 using an inner search over the CVaR threshold and an outer search over the dual multiplier. Under the paper's strong-duality assumptions, the multiplier is the shadow price of the CVaR budget.
 
 ## Repository structure
 
-The repository is organized around four standalone Python scripts. Each script contains the model specification, numerical solver, parameter search, simulation, and plotting routines needed for the corresponding experiment; no project-specific helper module is required.
+The four experiment scripts are standalone. `comparative_statics.py` is an optional entry point that calls `incomplete_market.py`; keep these two files in the same directory.
 
-| **File** | **Experiment** |
+| File | Experiment |
 | --- | --- |
-| `complete_market.py` | Section 5.1: complete-market benchmark, including the nonbinding and binding calibrations and path diagnostics. |
-| `incomplete_market.py` | Sections 5.2: incomplete-market benchmark with nontraded risk and the comparative statics in $\beta^\perp$ and the CVaR limit $c$. |
-| `comparative_statics.py` | Section 5.3: comparative statics in nontraded background risk $\beta^\perp$ and the terminal CVaR limit $c$. The script recomputes the optimal multiplier and average risky exposure for every parameter value. |
-| `quadratic_regularization.py` | Section 6.1: portfolio adjustment with quadratic trading-rate regularization. |
-| `square_root_impact.py` | Section 6.2: portfolio adjustment with square-root execution-price impact. |
+| `complete_market.py` | Section 5.1: complete-market benchmark. |
+| `incomplete_market.py` | Sections 5.2-5.3: incomplete market and all 14 direct-exposure comparative-statics cases. |
+| `comparative_statics.py` | Optional entry point for the same cases and algorithm as `incomplete_market.py`. |
+| `quadratic_regularization.py` | Section 6.1: quadratic trading-rate regularization. |
+| `square_root_impact.py` | Section 6.2: square-root price impact. |
 
-The numerical solutions are recomputed directly from the model and solver specifications in each script. 
-## Model and notation
+There are 18 distinct formal cases: 14 direct-exposure cases and four trading-rate cases.
 
-Terminal loss is
+## Model and algorithm
+
+Terminal loss is $-W_T$, with constraint $\mathrm{CVaR}_{\alpha}(-W_T)\le c$. The baseline budgets are $c=-0.86$ (nonbinding) and $c=-0.94$ (binding).
+
+| Parameter | Value |
+| --- | ---: |
+| Horizon $T$ | 1 |
+| Initial wealth $W_0$ | 1 |
+| Risk-free rate $r$ | 0 |
+| Excess return $\mu$ | 0.08 |
+| Volatility $\sigma$ | 0.20 |
+| Risk aversion $\gamma$ | 5 |
+| CVaR level $\alpha$ | 0.95 |
+
+Dollar risky exposure is denoted by $\varphi_t$. The complete market has $\beta^\perp=0$; the baseline incomplete market has independent nontraded risk $\beta^\perp=0.02$. The unconstrained Merton exposure is $\mu/(\gamma\sigma^2)=0.40$, and the numerical exposure bounds are $[-2,2]$.
+
+In the trading-rate models, the dollar trading rate $u_t$ controls the exposure state:
 
 ```math
-L_T=-W_T,
+d\varphi_t=u_t\,dt+\varphi_t(\mu\,dt+\sigma\,dB_t),\qquad \varphi_0=0.
 ```
 
-and the risk constraint is
+- **Quadratic regularization:** $\Lambda u_t^2/2$, with $\Lambda=0.01$, enters the objective only.
+- **Square-root impact:** $\Lambda_{3/2}|u_t|^{3/2}/(3/2)$, with $\Lambda_{3/2}=0.004472135955$, enters the objective and is deducted from wealth.
+
+The search uses the same numerical oracle for
 
 ```math
-\mathrm{CVaR}_{\alpha}(L_T)\le c,
-\qquad \alpha=0.95.
-```
-
-The two baseline risk budgets are
-
-- **nonbinding:** $c=-0.86$;
-- **binding:** $c=-0.94$.
-
-The empirical feasibility residual reported in the numerical experiments is
-
-```math
-\widehat{\mathrm{CVaR}}_{\alpha}(-W_T)-c.
-```
-
-A nonpositive residual is empirically feasible on that simulation sample. A small positive residual on an independent evaluation sample is reported as is; it is not used to retune the policy.
-
-### Direct-exposure benchmarks
-
-In the complete- and incomplete-market experiments, $\varphi_t$ denotes dollar risky exposure:
-
-```math
-dW_t
-=
-\varphi_t(\mu\,dt+\sigma\,dB_t)
-+
-\beta^\perp dB_t^\perp.
-```
-
-The complete-market benchmark sets $\beta^\perp=0$. The baseline incomplete-market experiment uses $\beta^\perp=0.02$, where $B^\perp$ is independent of the traded Brownian motion $B$.
-
-The running objective is
-
-```math
-J(\varphi)
-=
-\mathbb{E}\left[
-\int_0^T
-\left\{
-\frac{\gamma}{2}
-\left[
-(\sigma\varphi_t)^2+(\beta^\perp)^2
-\right]
--\mu\varphi_t
-\right\}dt
-\right].
-```
-
-The common calibration is
-
-| Parameter | Symbol | Value |
-| --- | --- | ---: |
-| Horizon | $T$ | 1 |
-| Initial wealth | $W_0$ | 1.00 |
-| Risk-free rate | $r$ | 0.00 |
-| Risky-asset drift | $\mu$ | 0.08 |
-| Risky-asset volatility | $\sigma$ | 0.20 |
-| Risk aversion | $\gamma$ | 5 |
-| CVaR level | $\alpha$ | 0.95 |
-
-The unconstrained Merton dollar exposure is
-
-```math
-\bar\varphi
-=
-\frac{\mu}{\gamma\sigma^2}
-=
-0.40.
-```
-
-This is a **benchmark only**, not a control cap. The direct-exposure experiments retain the numerical action bounds
-
-```math
--2\le \varphi_t\le 2.
-```
-
-### Trading-rate models
-
-For the portfolio-management extensions, let $\phi_t$ denote the number of shares and define
-
-```math
-\varphi_t=\phi_tS_t,
+C_h(\pi,\eta)
+=\eta+\frac{1}{1-\alpha}\mathbb E_h[(-W_T^\pi-\eta)^+]-c,
 \qquad
-\dot\varphi_t=\dot\phi_tS_t.
+\mathcal L_h(\pi,\eta;\lambda)=J_h(\pi)+\lambda C_h(\pi,\eta).
 ```
 
-Here $\dot\varphi_t$ denotes the signed dollar trading-rate control. The exposure state evolves as
+For positive $\lambda$, the inner golden-section search performs 64 reductions and compares $\mathcal L_h$. The outer search uses the returned fixed-$\eta$ residual $C_h$, performs up to 20 bisection iterations with an exact-zero early exit, and returns the last tested midpoint. At $\lambda=0$, the unconstrained policy is fixed and $\eta$ minimizes its risk auxiliary function.
 
-```math
-d\varphi_t
-=
-\dot\varphi_t\,dt
-+
-\varphi_t(\mu\,dt+\sigma\,dB_t).
+The multiplier, threshold, and policy are then frozen for independent Monte Carlo evaluation. Fixed-$\eta$ risk and empirical CVaR are reported separately, with martingale variance reduction. Evaluation results do not enter the search or trigger policy recovery or retuning.
+
+The $10^{-4}$ empirical risk-check tolerance is not a total continuous-model error bound or a guarantee of multiplier uniqueness. Square-root impact is a numerical experiment outside the affine-state convergence setting of the paper.
+
+## Numerical settings
+
+The wealth coordinate is $z=W+\eta$. All state grids are uniform.
+
+| Model | Control time steps | State grid | State domain | Control bounds |
+| --- | ---: | --- | --- | --- |
+| Direct exposure | 1,600 | 19,201 points in $z$ | $[-1.5,1.5]$ | $[-2,2]$ |
+| Quadratic regularization | 100 | $3,201\times1,601$ in $(z,\varphi)$ | $[-0.25,0.25]\times[-1,1]$ | $[-2,2]$ |
+| Square-root, nonbinding | 50 | $1,601\times801$ in $(z,\varphi)$ | $[-0.25,0.25]\times[-1,1]$ | $[-4,4]$ |
+| Square-root, binding | 50 | $801\times801$ in $(z,\varphi)$ | $[-0.25,0.25]\times[-1,1]$ | $[-4,4]$ |
+
+Formal evaluation settings are specified in each script's `CASES` list:
+
+| Experiment | Paths | Seed | Integrator | Substeps per control interval |
+| --- | ---: | ---: | --- | ---: |
+| Complete market | 65,536 | 82641279 | Milstein | 8 |
+| Incomplete market, $\beta^\perp>0$ | 65,536 | 82641279 | Euler | 16 |
+| Quadratic, nonbinding | 1,048,576 | 82641281 | Milstein | 64 |
+| Quadratic, binding | 65,536 | 82641281 | Milstein | 64 |
+| Square-root, nonbinding | 1,048,576 | 82641282 | Milstein | 64 |
+| Square-root, binding | 65,536 | 82641282 | Milstein | 64 |
+
+## Running the experiments
+
+Tested with Python 3.12.14 and the following dependencies:
+
+```bash
+python -m pip install numpy==2.3.5 numba==0.68.1 llvmlite==0.50.0 matplotlib==3.11.1
+
+python complete_market.py --output results
+python incomplete_market.py --output results
+python quadratic_regularization.py --output results
+python square_root_impact.py --output results
 ```
 
-The two specifications are:
+The optional `comparative_statics.py` can replace `incomplete_market.py` in these commands. Outputs include case solutions, simulation batches, summary CSVs, and summary plots. Completed cases are reused when their settings match. Full-resolution runs take several hours.
 
-- **Quadratic regularization:** $\Lambda\dot\varphi_t^2/2$, with $\Lambda=0.01$. This is an objective regularizer and is not deducted from wealth.
-- **Square-root price impact:** $\Lambda_{3/2}|\dot\varphi_t|^{3/2}/(3/2)$, with $\Lambda_{3/2}=0.004472135955$. This cost enters the objective and is also deducted from wealth through the execution-price adjustment.
+To inspect the case definitions or recompute statistics from saved formal samples:
 
-## Calibration and independent evaluation
-
-Policy selection and final evaluation use separate Monte Carlo samples.
-
-1. The HJB policy and CVaR threshold are computed on the search sample.
-2. In the complete- and incomplete-market experiments, an additional independent 20,000-path sample is used to select the raw dual root.
-3. The multiplier, threshold, and feedback policy are frozen.
-4. The frozen policy is evaluated on 50,000 independent out-of-sample (OOS) paths.
-
-The final OOS sample is **evaluation only**. No safety buffer, feasibility adjustment, or parameter retuning is applied after seeing the final OOS results.
-
-| Experiment | Search paths | Additional multiplier-selection paths | Final OOS paths | Final OOS seed |
-| --- | ---: | ---: | ---: | ---: |
-| Complete market | 5,000 | 20,000 | 50,000 | `1900013` |
-| Incomplete market | 5,000 | 20,000 | 50,000 | `1900013` |
-| Quadratic regularization | 10,000 | None | 50,000 | `1900013` |
-| Square-root impact | 1,000 | None | 50,000 | `900013` |
-
-For the direct-exposure experiments, the multiplier-selection sample uses seed `686035552`.
-
-## Numerical resolution
-
-| Experiment | Time steps | HJB state grid | Control | $\eta$ tolerance | $\lambda$ tolerance | CVaR residual tolerance |
-| --- | ---: | --- | --- | ---: | ---: | ---: |
-| Complete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2,2]$; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ |
-| Incomplete market | 100 | 201 nonuniform points in $W$, concentrated near $W=-\eta$ | Dollar exposure in $[-2,2]$; no Merton cap | $5\times10^{-4}$ | $10^{-6}$ | $10^{-5}$ |
-| Quadratic regularization | 320 | $161\times193$ in $(W,\varphi)$ | Trading rate in $[-2,2]$ | $5\times10^{-4}$ | $10^{-4}$ | $10^{-4}$ |
-| Square-root impact | 200 | $80\times100$ in $(W,\varphi)$ | Trading rate in $[-4,4]$ | $10^{-5}$ | $10^{-7}$ | $10^{-6}$ |
-
-The direct-exposure wealth grids are rebuilt around the candidate terminal-loss kink $W=-\eta$. Numba acceleration is used when available and implements the same finite-difference formulas as the NumPy version.
-
-## Sensitivity analysis and the shadow price
-
-For a fixed market environment, define
-
-```math
-p(c)
-=
-\inf_{\varphi}
-\left\{
-J(\varphi):
-\mathrm{CVaR}_{\alpha}(-W_T)\le c
-\right\}.
+```bash
+python incomplete_market.py --list
+python incomplete_market.py --output results --verify-only
 ```
 
-Under the strong-duality assumptions of the paper,
+## Comparative statics
 
-```math
--\lambda^\star(c)\in\partial p(c).
-```
+For the risk-budget sweep, the final multipliers are:
 
-Thus $\lambda^\star$ is the shadow price of the CVaR budget. When $p$ is differentiable,
-
-```math
-\lambda^\star(c)=-p'(c).
-```
-
-For a fixed market environment, tightening the CVaR budget therefore yields a nondecreasing optimal shadow price. This monotonicity is a theoretical consequence of the value-function sensitivity relation.
-
-### Sensitivity to the CVaR budget
-
-The numerical experiment varies
-
-```math
-c\in\{-0.86,-0.88,-0.90,-0.92,-0.94\}.
-```
-
-| $c$ | $\widehat\lambda$, complete market | $\widehat\lambda$, $\beta^\perp=0.02$ |
+| $c$ | $\widehat\lambda$, $\beta^\perp=0$ | $\widehat\lambda$, $\beta^\perp=0.02$ |
 | ---: | ---: | ---: |
-| -0.86 | 0.0000 | 0.0000 |
-| -0.88 | 0.0050 | 0.0082 |
-| -0.90 | 0.0167 | 0.0249 |
-| -0.92 | 0.0322 | 0.0552 |
-| -0.94 | 0.0548 | 0.1252 |
+| -0.86 | 0.000000 | 0.000000 |
+| -0.88 | 0.005306 | 0.008982 |
+| -0.90 | 0.015926 | 0.025336 |
+| -0.92 | 0.031743 | 0.057224 |
+| -0.94 | 0.058146 | 0.138464 |
 
-The shadow price rises as the CVaR limit is tightened. Once the constraint binds, the incomplete-market multiplier is substantially larger, indicating that the same tail-risk budget is more costly in the presence of unhedgeable background risk.
+For the background-risk sweep at $c=-0.94$:
 
-### Sensitivity to nontraded background risk
-
-Holding $c=-0.94$ fixed, the experiment varies
-
-```math
-\beta^\perp
-\in
-\{0,0.005,0.010,0.015,0.020,0.025\}.
-```
-
-| $\beta^\perp$ | $\widehat\lambda$ | Average risky exposure |
+| $\beta^\perp$ | $\widehat\lambda$ | Average dollar risky exposure |
 | ---: | ---: | ---: |
-| 0.000 | 0.0548 | 0.3061 |
-| 0.005 | 0.0578 | 0.3041 |
-| 0.010 | 0.0714 | 0.2976 |
-| 0.015 | 0.0943 | 0.2840 |
-| 0.020 | 0.1252 | 0.2633 |
-| 0.025 | 0.2012 | 0.2274 |
+| 0.000 | 0.058146 | 0.317031 |
+| 0.005 | 0.064182 | 0.311886 |
+| 0.010 | 0.076353 | 0.302687 |
+| 0.015 | 0.098101 | 0.288045 |
+| 0.020 | 0.138464 | 0.266086 |
+| 0.025 | 0.232862 | 0.231447 |
 
-Across this numerical grid, larger nontraded risk is associated with a higher shadow price and lower average risky exposure. This monotonicity in $\beta^\perp$ is a **numerical finding**, not a general theoretical claim.
-
-At $\beta^\perp=0.025$, the maximum simulated exposure reaches the numerical upper action bound $2$. The endpoint is therefore useful as a sensitivity diagnostic, but the main qualitative pattern is already visible well before that boundary is reached.
-
-## Path diagnostics
-
-The direct-exposure experiments illustrate that the CVaR constraint does not simply impose a constant proportional reduction in risky exposure.
-
-The path figures include representative favorable and unfavorable realizations together with the Merton benchmark $\bar\varphi=0.40$. In particular, the uncapped feedback policy can exhibit a lower-tail **rebound** near maturity: along selected unfavorable paths, risky exposure can rise above the static Merton benchmark even though average exposure remains substantially below it.
-
-The selected lower-tail path is a diagnostic realization rather than a claim about typical behavior. The code identifies such paths explicitly from an independent simulation sample.
-
-
-```
-
+The multiplier increases as the risk budget tightens. Increasing background risk also raises the multiplier and lowers average exposure in this calibration; the finding in $\beta^\perp$ is numerical rather than a general monotonicity theorem. At $\beta^\perp=0.025$, some simulated paths reach the upper exposure bound of 2.
