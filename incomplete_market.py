@@ -1,4 +1,5 @@
-# Python 3.12; numpy==2.3.5 numba==0.68.1 llvmlite==0.50.0 matplotlib==3.11.1
+# Python 3.12; numpy==2.3.5 numba==0.62.1 llvmlite==0.45.1 matplotlib==3.11.1
+# For beta>0, Milstein evaluates the equivalent scalar wealth diffusion.
 import argparse
 import csv
 import hashlib
@@ -16,20 +17,20 @@ from numba import njit, prange, get_num_threads, set_num_threads
 ENTRY = 'incomplete'
 IS_ASSET = True
 CASES = [
-    ('beta_0.020_c_-0.86', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.86, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
-    ('beta_0.020_c_-0.94', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005, 'x_bound': 1.0}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
+    ('beta_0.020_c_-0.86', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.86, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
+    ('beta_0.020_c_-0.94', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005, 'x_bound': 1.0}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
     ('beta_0.000_c_-0.94', {'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 8, 'method': 'milstein', 'batch_size': 32768}),
-    ('beta_0.005_c_-0.94', {'model': 'incomplete', 'beta': 0.005, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
-    ('beta_0.010_c_-0.94', {'model': 'incomplete', 'beta': 0.01, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
-    ('beta_0.015_c_-0.94', {'model': 'incomplete', 'beta': 0.015, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
-    ('beta_0.025_c_-0.94', {'model': 'incomplete', 'beta': 0.025, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
+    ('beta_0.005_c_-0.94', {'model': 'incomplete', 'beta': 0.005, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
+    ('beta_0.010_c_-0.94', {'model': 'incomplete', 'beta': 0.01, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
+    ('beta_0.015_c_-0.94', {'model': 'incomplete', 'beta': 0.015, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
+    ('beta_0.025_c_-0.94', {'model': 'incomplete', 'beta': 0.025, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.94, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
     ('beta_0.000_c_-0.86', {'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.86, {'paths': 65536, 'seed': 82641279, 'subdivisions': 8, 'method': 'milstein', 'batch_size': 32768}),
     ('beta_0.000_c_-0.88', {'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.88, {'paths': 65536, 'seed': 82641279, 'subdivisions': 8, 'method': 'milstein', 'batch_size': 32768}),
     ('beta_0.000_c_-0.90', {'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.9, {'paths': 65536, 'seed': 82641279, 'subdivisions': 8, 'method': 'milstein', 'batch_size': 32768}),
     ('beta_0.000_c_-0.92', {'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.92, {'paths': 65536, 'seed': 82641279, 'subdivisions': 8, 'method': 'milstein', 'batch_size': 32768}),
-    ('beta_0.020_c_-0.88', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.88, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
-    ('beta_0.020_c_-0.90', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.9, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
-    ('beta_0.020_c_-0.92', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.92, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'euler', 'batch_size': 32768}),
+    ('beta_0.020_c_-0.88', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.88, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
+    ('beta_0.020_c_-0.90', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.9, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
+    ('beta_0.020_c_-0.92', {'model': 'incomplete', 'beta': 0.02, 'steps': 1600, 'dz': 0.00015625, 'dx': 0.005}, -0.92, {'paths': 65536, 'seed': 82641279, 'subdivisions': 16, 'method': 'milstein', 'batch_size': 32768}),
 ]
 
 @dataclass(frozen=True)
@@ -265,7 +266,12 @@ def step_asset_cv(W, M, cost, exposure, policy, H0, H1, tw, z0, dz, eta, db, dbp
         M[n] += dh * shock
         cost[n] += dt * (0.5 * gamma * ((sigma * control) ** 2 + beta ** 2) - mu * control)
         exposure[n] += dt * control
-        correction = 0.5 * sigma * sigma * control * da * (db[n] * db[n] - dt) if milstein else 0.0
+        correction = 0.0
+        if milstein:
+            square = db[n] * db[n]
+            if beta:
+                square = shock * shock / ((sigma * control) ** 2 + beta ** 2)
+            correction = 0.5 * sigma * sigma * control * da * (square - dt)
         W[n] += mu * control * dt + shock + correction
     return (outside, 0)
 
@@ -445,8 +451,8 @@ def evaluate(directory, settings):
     frozen = json.loads((directory / 'solution.json').read_text(encoding='ascii'))
     p, s = (Config(**frozen['config']), frozen['solution'])
     paths, seed, m = (settings['paths'], settings['seed'], settings['subdivisions'])
-    if p.beta and settings['method'] != 'euler':
-        raise ValueError('The two-noise model requires Euler evaluation')
+    if settings['method'] not in ('euler', 'milstein'):
+        raise ValueError('Unknown evaluation method')
     policy = np.load(directory / 'policy.npy', mmap_mode='r')
     H = np.load(directory / 'risk_snapshots.npy', mmap_mode='r')
     if H.shape != (p.steps + 1,) + policy.shape[1:]:
@@ -536,7 +542,9 @@ def main():
     parser.add_argument('--case-key', action='append')
     parser.add_argument('--threads', type=int, default=min(4, get_num_threads()))
     parser.add_argument('--list', action='store_true')
-    parser.add_argument('--verify-only', action='store_true')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--verify-only', action='store_true')
+    modes.add_argument('--evaluate-only', action='store_true')
     parser.add_argument('--no-plots', action='store_true')
     args = parser.parse_args()
     if not 1 <= args.threads <= get_num_threads():
@@ -556,7 +564,12 @@ def main():
             if frozen['config'] != asdict(p) or frozen['budget'] != budget:
                 raise ValueError('Saved experiment configuration differs')
         else:
-            solve_case(p, budget, directory)
+            if not args.evaluate_only:
+                solve_case(p, budget, directory)
+            else:
+                frozen = json.loads((directory / 'solution.json').read_text(encoding='ascii'))
+                if frozen['config'] != asdict(p) or frozen['budget'] != budget:
+                    raise ValueError('Saved experiment configuration differs')
             frozen, stats = evaluate(directory, settings)
         row = summary_row(key, frozen, stats)
         rows.append(row)
