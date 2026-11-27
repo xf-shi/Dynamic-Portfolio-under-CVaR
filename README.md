@@ -66,7 +66,7 @@ Formal evaluation settings are specified in each script's `CASES` list:
 | Experiment | Paths | Seed | Integrator | Substeps per control interval |
 | --- | ---: | ---: | --- | ---: |
 | Complete market | 65,536 | 82641279 | Milstein | 8 |
-| Incomplete market, $\beta^\perp>0$ | 65,536 | 82641279 | Euler | 16 |
+| Incomplete market, $\beta^\perp>0$ | 65,536 | 82641279 | Milstein | 16 |
 | Quadratic, nonbinding | 1,048,576 | 82641281 | Milstein | 64 |
 | Quadratic, binding | 65,536 | 82641281 | Milstein | 64 |
 | Square-root, nonbinding | 1,048,576 | 82641282 | Milstein | 64 |
