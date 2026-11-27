@@ -1,4 +1,4 @@
-# Python 3.12; numpy==2.3.5 numba==0.68.1 llvmlite==0.50.0 matplotlib==3.11.1
+# Python 3.12; numpy==2.3.5 numba==0.62.1 llvmlite==0.45.1 matplotlib==3.11.1
 import argparse
 import csv
 import hashlib
@@ -16,8 +16,8 @@ from numba import njit, prange, get_num_threads, set_num_threads
 ENTRY = 'square_root'
 IS_ASSET = False
 CASES = [
-    ('square_root_nonbinding', {'model': 'square_root', 'coefficient': 0.004472135955, 'steps': 50, 'dz': 0.0003125, 'z_bound': 0.25, 'dx': 0.0025, 'x_bound': 1.0, 'action_bound': 4.0, 'oos_seed': 900013}, -0.86, {'paths': 1048576, 'seed': 82641282, 'subdivisions': 64, 'method': 'milstein', 'batch_size': 32768}),
-    ('square_root_binding', {'model': 'square_root', 'coefficient': 0.004472135955, 'steps': 50, 'dz': 0.000625, 'z_bound': 0.25, 'dx': 0.0025, 'x_bound': 1.0, 'action_bound': 4.0, 'oos_seed': 900013}, -0.94, {'paths': 65536, 'seed': 82641282, 'subdivisions': 64, 'method': 'milstein', 'batch_size': 32768}),
+    ('square_root_nonbinding', {'model': 'square_root', 'coefficient': 0.0045, 'steps': 50, 'dz': 0.0003125, 'z_bound': 0.25, 'dx': 0.0025, 'x_bound': 1.0, 'action_bound': 4.0, 'oos_seed': 900013}, -0.86, {'paths': 1048576, 'seed': 82641282, 'subdivisions': 64, 'method': 'milstein', 'batch_size': 32768}),
+    ('square_root_binding', {'model': 'square_root', 'coefficient': 0.0045, 'steps': 50, 'dz': 0.000625, 'z_bound': 0.25, 'dx': 0.0025, 'x_bound': 1.0, 'action_bound': 4.0, 'oos_seed': 900013}, -0.94, {'paths': 65536, 'seed': 82641282, 'subdivisions': 64, 'method': 'milstein', 'batch_size': 32768}),
 ]
 
 @dataclass(frozen=True)
