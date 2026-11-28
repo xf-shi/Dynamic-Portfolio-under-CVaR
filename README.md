@@ -23,7 +23,7 @@ In the trading-rate models, the control $u_t$ is the signed dollar trading rate,
 d\varphi_t=u_t\,dt+\varphi_t(\mu\,dt+\sigma\,dB_t),\qquad \varphi_0=0.
 ```
 
-Quadratic regularization enters the objective only. Square-root execution costs enter both the objective and wealth dynamics. Exact cost coefficients and case configurations are specified in the scripts.
+Quadratic regularization uses $\Lambda=0.01$ and enters the objective only. Square-root execution costs use $\Lambda_{3/2}=0.0045$ and enter both the objective and wealth dynamics as $\Lambda_{3/2}|u_t|^{3/2}/(3/2)$. Case configurations are specified in the scripts.
 
 The objective and risk residual are evaluated using the same numerical oracle:
 
@@ -85,7 +85,9 @@ python incomplete_market.py --output results/direct_exposure --verify-only
 
 ## Results
 
-The 14 direct-exposure cases were solved from scratch and independently evaluated using Milstein. The four trading-rate cases retain their previously verified results. The table reports the calibration and evaluation settings above.
+The 14 direct-exposure cases were solved from scratch and independently evaluated using Milstein. Both square-root-impact cases were also reoptimized and independently evaluated with $\Lambda_{3/2}=0.0045$. The two quadratic results come from the earlier full rerun of the identical `quadratic_regularization.py` source. The source files associated with these runs match the four scripts currently published in this repository.
+
+The recorded quadratic runs used Numba 0.68.1 and llvmlite 0.50.0; the direct-exposure and updated square-root runs used Numba 0.62.1 and llvmlite 0.45.1. All used Python 3.12 and NumPy 2.3.5.
 
 All numerical results are rounded to three decimal places. Return is $100(\widehat{\mathbb E}[W_T]/w_0-1)$, and average exposure estimates $T^{-1}\mathbb E[\int_0^T\varphi_t\,dt]$.
 
@@ -107,8 +109,8 @@ All numerical results are rounded to three decimal places. Return is $100(\wideh
 | Incomplete market | 0.025 | -0.940 | 0.233 | -0.940 | 1.872% | 0.231 |
 | Quadratic regularization | 0.000 | -0.860 | 0.000 | -0.897 | 2.481% | 0.310 |
 | Quadratic regularization | 0.000 | -0.940 | 0.048 | -0.940 | 2.040% | 0.250 |
-| Square-root impact | 0.000 | -0.860 | 0.000 | -0.886 | 2.635% | 0.348 |
-| Square-root impact | 0.000 | -0.940 | 0.059 | -0.940 | 2.021% | 0.267 |
+| Square-root impact | 0.000 | -0.860 | 0.000 | -0.886 | 2.633% | 0.348 |
+| Square-root impact | 0.000 | -0.940 | 0.059 | -0.940 | 2.019% | 0.266 |
 
 CVaR estimates use martingale variance reduction. Raw empirical CVaR, fixed-threshold risk, and Monte Carlo standard errors are also saved. The empirical risk-check tolerance is $10^{-4}$; it is not a total continuous-model error bound, and rounded values do not establish strict feasibility.
 
